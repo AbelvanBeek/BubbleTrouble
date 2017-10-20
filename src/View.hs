@@ -9,4 +9,8 @@ view :: GameState -> IO Picture
 view = return . viewPure
 
 viewPure :: GameState -> Picture
-viewPure gstate = color red (text (show "GAAAMMMEE"))
+viewPure gstate = case gstate of
+    GameState Menu _        ->  color red (text (show "Menu"))
+    GameState Play _        ->  color green (text (show "Play"))
+    GameState Pause _       ->  color blue (text (show "Pause"))
+    GameState GameOver _    ->  color white (text (show "GameOver"))

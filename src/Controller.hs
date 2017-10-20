@@ -17,7 +17,20 @@ input :: Event -> GameState -> IO GameState
 input e gstate = return (inputKey e gstate)
 
 inputKey :: Event -> GameState -> GameState
-inputKey (EventKey (Char c) _ _ _) gstate
-  = -- If the user presses a character key, show that one
-    gstate { gameStatus = Play }
-inputKey _ gstate = gstate -- Otherwise keep the same
+-- If the user presses a character key, handle that one
+inputKey (EventKey k _ _ _) gstate = case k of
+
+  -- Player movements
+  Char 'p'            -> gstate { gameStatus = Pause }
+  Char 'm'            -> gstate { gameStatus = Menu }
+  Char 'g'            -> gstate { gameStatus = GameOver }
+  SpecialKey KeySpace -> gstate { gameStatus = Play }
+
+  -- Game handling
+  SpecialKey KeyEsc   -> error "Game closed"
+
+  -- Not recognized
+  _                   -> gstate
+
+-- Handle other patterns than an EventKey
+inputKey _ gstate     = gstate
