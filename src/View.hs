@@ -10,7 +10,10 @@ view = return . viewPure
 
 viewPure :: GameState -> Picture
 viewPure gstate = case gstate of
-    GameState Menu _        ->  color red (text (show "Menu"))
-    GameState Play _        ->  color green (text (show "Play"))
-    GameState Pause _       ->  color blue (text (show "Pause"))
-    GameState GameOver _    ->  color white (text (show "GameOver"))
+    GameState Menu lvl _       ->  pictures [color red (text (show "Menu")) | x <- lvl] -- For every gameobject x in level, show x -> MAAK SHOW VOOR GAMEOBJECTS
+    GameState Play lvl _       ->  color green (text (show "Play"))
+    GameState Pause lvl _      ->  color blue (text (show "Pause"))
+    GameState GameOver lvl _   ->  color white (text (show "GameOver"))
+
+showGameObject :: Gameobject -> Picture -- Dit, of een instance van show method, maar dit is makkelijker xD
+showGameObject = undefined

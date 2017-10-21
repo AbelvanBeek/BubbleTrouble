@@ -10,7 +10,7 @@ main :: IO ()
 main = playIO FullScreen       -- Or FullScreen
               black            -- Background color
               60               -- Frames per second
-              initialState     -- Initial state
+              initialMenu      -- Initial state
               view             -- View function
               input            -- Event function
               step             -- Step function
