@@ -5,9 +5,6 @@ module Model where
 import Graphics.Gloss
 import Graphics.Gloss.Juicy
 
---import PngToPic
---import Data.ByteString as B
-
 {- Data Types -}
 
 -- Main game status data types
@@ -23,51 +20,134 @@ data GameState = GameState {
                  }
 
 -- Level/Score related data types
-type Level = [Gameobject]
+data Level = Level { 
+                  p1 :: Player
+                , p1Objects :: [PlayerObjects]
+                , p2 :: Player
+                , p2Objects :: [PlayerObjects]
+                , enemies :: [EnemyObjects]
+                , lvl :: [LevelObjects]
+                }
 
-data Score = Score Int
-data Lives = Lives Int
+type Score = Int
+type Lives = Int
 
 -- Display data types
-data Velocity = Velocity { xvel :: Float, yvel :: Float }
-data Position = Position { xpos :: Float, ypos :: Float }
+data Pt    = Pt  { xpt  :: Float, ypt  :: Float }
+data Vec   = Vec { xvec :: Float, yvex :: Float }
+
+type Position = Pt
+type Velocity = Vec
 
 data Size = Size { w :: Float, h :: Float }
--- data Sprite = Sprite Picture
-newtype Animation = Animation { unAnimate :: [Picture] }
+
+type Sprite = Picture
+newtype Animation = Animation { unAnimate :: [Sprite] }
 
 -- Game object related data types
-data ObjectInfo = ObjectInfo Color Velocity Position Picture Size
-data Gameobject = Wall ObjectInfo | Ball ObjectInfo | Player PlayerInfo| Arrow ObjectInfo
+-- Union all gameobjects in one data type
+--data GameObjects = Player | PlayerObjects | LevelObjects | EnemyObjects
+
+data ObjectInfo = ObjectInfo { c :: Color, vel :: Velocity, pos :: Position, size :: Size }
+data PlayerObjects = Arrow ObjectInfo
+data LevelObjects = Wall ObjectInfo 
+data EnemyObjects = Ball ObjectInfo 
 
 -- Player related data types
-data IsShooting = True | False
-data PlayerInfo = PlayerInfo ObjectInfo Score IsShooting Lives
 data Player = P1 PlayerInfo | P2 PlayerInfo
+data IsShooting = Yes | No
+data PlayerInfo = PlayerInfo {objectinfo :: ObjectInfo, score :: Score, shooting :: IsShooting, lives :: Lives}
 
 {- Initialize States -}
 
 initialMenu :: GameState
-initialMenu = GameState Menu [Wall (ObjectInfo blue (Velocity 0 0) (Position 0 0) (Circle 50) (Size 1 1))] 0
+initialMenu = GameState Menu (Level 
+                                (P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5))
+                                [] 
+                                (P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5))
+                                [] 
+                                [Ball (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1))] 
+                                []) 0
+
 
 initialPlay :: GameState
-initialPlay = GameState Play [] 0
+initialPlay = GameState Play (Level 
+                                (P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5))
+                                [] 
+                                (P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5))
+                                [] 
+                                [] 
+                                []) 0
 
 initialGameOver :: GameState
-initialGameOver = GameState GameOver [] 0
+initialGameOver = GameState GameOver (Level 
+                                        (P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5))
+                                        [] 
+                                        (P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5))
+                                        [] 
+                                        [] 
+                                        []) 0
+
 
 -- initial pause not neccesary? Just freeze the current game -> No update velocity etc anymore
 
 {- Type Classes -}
 
-class Drawable a where 
-  showSprite :: a -> Picture
+-- update locations
+class Update a where 
+  update :: a -> a
 
-instance Drawable Gameobject where
-  showSprite (Player (PlayerInfo objectinfo _ _ _ ))  = getPic objectinfo
-  showSprite (Wall objectinfo)                        = getPic objectinfo
-  showSprite (Ball objectinfo)                        = getPic objectinfo
-  showSprite (Arrow objectinfo)                       = getPic objectinfo
+instance Update Player where
+  update o@(P1 (PlayerInfo objectinfo _ _ _)) = o
+  update o@(P2 (PlayerInfo objectinfo _ _ _)) = o
 
-getPic :: ObjectInfo -> Picture
-getPic (ObjectInfo c _ (Position x y) spr (Size w h)) = color c $ translate x y $ scale w h spr
+instance Update PlayerObjects where
+  update o@(Arrow objectinfo)      = o
+
+instance Update EnemyObjects where
+  update o@(Ball objectinfo)       = o
+
+instance Update LevelObjects where
+  update o@(Wall objectinfo)       = o
+
+
+-- draw with correct sprite
+class Draw a where 
+  draw :: a -> IO Picture
+
+instance Draw Player where
+  draw o@(P1 (PlayerInfo objectinfo _ _ _)) = retSprite (getFilePathP o) objectinfo
+  draw o@(P2 (PlayerInfo objectinfo _ _ _)) = retSprite (getFilePathP o) objectinfo
+
+instance Draw PlayerObjects where
+  draw o@(Arrow objectinfo)      = retSprite (getFilePathU o) objectinfo
+
+instance Draw EnemyObjects where
+  draw o@(Ball objectinfo)       = retSprite (getFilePathE o) objectinfo
+
+instance Draw LevelObjects where
+  draw o@(Wall objectinfo)       = retSprite (getFilePathL o) objectinfo
+
+getFilePathP :: Player -> FilePath
+getFilePathP (P1 _) = "assets/ball.png"
+getFilePathP (P2 _) = "assets/ball.png"
+
+getFilePathU :: PlayerObjects -> FilePath
+getFilePathU (Arrow _) = "assets/ball.png"
+
+getFilePathE :: EnemyObjects -> FilePath
+getFilePathE (Ball _) = "assets/ball.png"
+
+getFilePathL :: LevelObjects -> FilePath
+getFilePathL (Wall _) = "assets/ball.png"
+
+retSprite :: FilePath -> ObjectInfo -> IO Picture
+retSprite path (ObjectInfo c (Vec vx vy) (Pt px py) (Size w h)) = do mbpic <- loadJuicyPNG path
+                                                                     return $ color c $ translate vx vy $ scale w h (maybePicToIO mbpic)
+
+{- Helper Functions-}
+
+-- Convert a maybe picture to a picture -> Blank picture in case of Nothing
+maybePicToIO :: Maybe Picture -> Picture
+maybePicToIO Nothing  = blank
+maybePicToIO (Just x) = x
