@@ -1,6 +1,7 @@
 module Main where
 
 import Controller
+import HandleInput
 import Model
 import View
 

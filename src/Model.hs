@@ -3,6 +3,7 @@
 module Model where
 
 import Graphics.Gloss
+import Graphics.Gloss.Juicy
 
 --import PngToPic
 --import Data.ByteString as B

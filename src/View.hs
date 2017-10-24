@@ -14,6 +14,3 @@ viewPure gstate = case gstate of
     GameState Play lvl _       ->  color green (text (show "Play"))
     GameState Pause lvl _      ->  color blue (text (show "Pause"))
     GameState GameOver lvl _   ->  color white (text (show "GameOver"))
-
-showGameObject :: Gameobject -> Picture -- Dit, of een instance van show method, maar dit is makkelijker xD
-showGameObject = undefined
