@@ -10,7 +10,7 @@ view = return . viewPure
 
 viewPure :: GameState -> Picture
 viewPure gstate = case gstate of
-    GameState Menu lvl _       ->  pictures [color red (text (show "Menu")) | x <- lvl] -- For every gameobject x in level, show x -> MAAK SHOW VOOR GAMEOBJECTS
+    GameState Menu lvl _       ->  pictures [showSprite x | x <- lvl] -- For every gameobject x in level, show x -> MAAK SHOW VOOR GAMEOBJECTS
     GameState Play lvl _       ->  color green (text (show "Play"))
     GameState Pause lvl _      ->  color blue (text (show "Pause"))
     GameState GameOver lvl _   ->  color white (text (show "GameOver"))
