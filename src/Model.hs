@@ -21,12 +21,12 @@ data GameState = GameState {
 
 -- Level/Score related data types
 data Level = Level { 
-                  p1 :: Player
-                , p1Objects :: [PlayerObjects]
-                , p2 :: Player
-                , p2Objects :: [PlayerObjects]
-                , enemies :: [EnemyObjects]
-                , lvl :: [LevelObjects]
+                  p1 :: GameObjects
+                , p1Objects :: [GameObjects]
+                , p2 :: GameObjects
+                , p2Objects :: [GameObjects]
+                , enemies :: [GameObjects]
+                , lvl :: [GameObjects]
                 }
 
 type Score = Int
@@ -46,7 +46,7 @@ newtype Animation = Animation { unAnimate :: [Sprite] }
 
 -- Game object related data types
 -- Union all gameobjects in one data type
-data GameObjects = Player | PlayerObjects | LevelObjects | EnemyObjects -- Wel kut met extra constuctor...
+data GameObjects = Player Player| PlayerObjects PlayerObjects| LevelObjects LevelObjects | EnemyObjects EnemyObjects -- Wel kut met extra constuctor...
 
 data ObjectInfo = ObjectInfo { c :: Color, vel :: Velocity, pos :: Position, size :: Size }
 data PlayerObjects = Arrow ObjectInfo
@@ -62,28 +62,28 @@ data PlayerInfo = PlayerInfo {objectinfo :: ObjectInfo, score :: Score, shooting
 
 initialMenu :: GameState
 initialMenu = GameState Menu (Level 
-                                (P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5))
+                                (Player(P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5)))
                                 [] 
-                                (P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5))
+                                (Player(P2 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5)))
                                 [] 
-                                [Ball (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1))] 
+                                [EnemyObjects(Ball (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)))] 
                                 []) 0
 
 
 initialPlay :: GameState
 initialPlay = GameState Play (Level 
-                                (P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5))
+                                (Player(P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5)))
                                 [] 
-                                (P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5))
+                                (Player(P2 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5)))
                                 [] 
                                 [] 
                                 []) 0
 
 initialGameOver :: GameState
 initialGameOver = GameState GameOver (Level 
-                                        (P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5))
+                                        (Player(P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5)))
                                         [] 
-                                        (P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5))
+                                        (Player(P2 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5)))
                                         [] 
                                         [] 
                                         []) 0
@@ -97,55 +97,42 @@ initialGameOver = GameState GameOver (Level
 class Update a where 
   update :: a -> a
 
-instance Update Player where
-  update o@(P1 (PlayerInfo objectinfo _ _ _)) = o
-  update o@(P2 (PlayerInfo objectinfo _ _ _)) = o
+instance Update GameObjects where
+  update o@(Player(P1 (PlayerInfo objectinfo _ _ _))) = o
+  update o@(Player(P2 (PlayerInfo objectinfo _ _ _))) = o
+  update o@(PlayerObjects(Arrow objectinfo))      = o
+  update o@(EnemyObjects(Ball (ObjectInfo clr vec (Pt x y) size))) = EnemyObjects(Ball (ObjectInfo clr vec (Pt (x+1) y) size))
+  update o@(LevelObjects(Wall objectinfo))       = o
 
-instance Update PlayerObjects where
-  update o@(Arrow objectinfo)      = o
-
-instance Update EnemyObjects where
-  update o@(Ball objectinfo)       = o
-
-instance Update LevelObjects where
-  update o@(Wall objectinfo)       = o
+updateObjects :: [GameObjects] -> [GameObjects]
+updateObjects x = map update x
 
 -- Update position somewhere and reset velocity?
 
+-- Given a level, all objects in that level will be drawn
+drawLevel :: Level -> [IO Picture]
+drawLevel (Level p1 p1o p2 p2o enemies lvl) = [draw p1] ++ (map draw p1o) ++ [draw p2] ++ (map draw p2o) ++ (map draw enemies) ++ (map draw lvl)
 
 -- Given an object to draw, will return the correct IO picture for that object
 class Draw a where 
   draw :: a -> IO Picture
 
-instance Draw Player where
-  draw o@(P1 _) = setSprite $ getFilePathP o
-  draw o@(P2 _) = setSprite $ getFilePathP o
+instance Draw GameObjects where
+  draw o@(Player(P1 (PlayerInfo objectinfo _ _ _))) = setSprite (getFilePath o) objectinfo
+  draw o@(Player(P2 (PlayerInfo objectinfo _ _ _))) = setSprite (getFilePath o) objectinfo
+  draw o@(PlayerObjects(Arrow objectinfo))      = setSprite (getFilePath o) objectinfo
+  draw o@(EnemyObjects(Ball objectinfo))       = setSprite (getFilePath o) objectinfo
+  draw o@(LevelObjects(Wall objectinfo))       = setSprite (getFilePath o) objectinfo
 
-instance Draw PlayerObjects where
-  draw o@(Arrow _)      = setSprite $ getFilePathU o
+getFilePath :: GameObjects -> FilePath
+getFilePath (Player _) = "assets/ball.png"
+getFilePath (PlayerObjects(Arrow _)) = "assets/ball.png"
+getFilePath (EnemyObjects(Ball _)) = "assets/ball.png"
+getFilePath (LevelObjects(Wall _)) = "assets/ball.png"
 
-instance Draw EnemyObjects where
-  draw o@(Ball _)       = setSprite $ getFilePathE o
-
-instance Draw LevelObjects where
-  draw o@(Wall _)       = setSprite $ getFilePathL o
-
-getFilePathP :: Player -> FilePath
-getFilePathP (P1 _) = "assets/ball.png"
-getFilePathP (P2 _) = "assets/ball.png"
-
-getFilePathU :: PlayerObjects -> FilePath
-getFilePathU (Arrow _) = "assets/ball.png"
-
-getFilePathE :: EnemyObjects -> FilePath
-getFilePathE (Ball _) = "assets/ball.png"
-
-getFilePathL :: LevelObjects -> FilePath
-getFilePathL (Wall _) = "assets/ball.png"
-
-setSprite :: FilePath -> IO Picture
-setSprite path = do mbpic <- loadJuicyPNG path
-                    return $ maybePicToIO mbpic
+setSprite :: FilePath -> ObjectInfo -> IO Picture
+setSprite path (ObjectInfo c (Vec vx vy) (Pt px py) (Size w h)) = do mbpic <- loadJuicyPNG path
+                                                                     return $ translate px py $ maybePicToIO mbpic
 
 {- Helper Functions-}
 

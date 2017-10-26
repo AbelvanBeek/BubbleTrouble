@@ -7,8 +7,8 @@ import Graphics.Gloss
 import Model
 
 view :: GameState -> IO Picture
-view (GameState _ (Level _ _ _ _ enemies _) _) = do x <- sequence $ map draw enemies                 -- return . viewPure
-                                                    return (pictures x)
+view (GameState _ lvl _) = do x <- sequence $ drawLevel lvl                -- return . viewPure
+                              return (pictures x)
 
 viewPure :: GameState -> Picture
 viewPure gstate = case gstate of
