@@ -46,7 +46,7 @@ newtype Animation = Animation { unAnimate :: [Sprite] }
 
 -- Game object related data types
 -- Union all gameobjects in one data type
---data GameObjects = Player | PlayerObjects | LevelObjects | EnemyObjects
+data GameObjects = Player | PlayerObjects | LevelObjects | EnemyObjects -- Wel kut met extra constuctor...
 
 data ObjectInfo = ObjectInfo { c :: Color, vel :: Velocity, pos :: Position, size :: Size }
 data PlayerObjects = Arrow ObjectInfo
@@ -110,8 +110,51 @@ instance Update EnemyObjects where
 instance Update LevelObjects where
   update o@(Wall objectinfo)       = o
 
+-- Update position somewhere and reset velocity?
 
--- draw with correct sprite
+
+-- Given an object to draw, will return the correct IO picture for that object
+class Draw a where 
+  draw :: a -> IO Picture
+
+instance Draw Player where
+  draw o@(P1 _) = setSprite $ getFilePathP o
+  draw o@(P2 _) = setSprite $ getFilePathP o
+
+instance Draw PlayerObjects where
+  draw o@(Arrow _)      = setSprite $ getFilePathU o
+
+instance Draw EnemyObjects where
+  draw o@(Ball _)       = setSprite $ getFilePathE o
+
+instance Draw LevelObjects where
+  draw o@(Wall _)       = setSprite $ getFilePathL o
+
+getFilePathP :: Player -> FilePath
+getFilePathP (P1 _) = "assets/ball.png"
+getFilePathP (P2 _) = "assets/ball.png"
+
+getFilePathU :: PlayerObjects -> FilePath
+getFilePathU (Arrow _) = "assets/ball.png"
+
+getFilePathE :: EnemyObjects -> FilePath
+getFilePathE (Ball _) = "assets/ball.png"
+
+getFilePathL :: LevelObjects -> FilePath
+getFilePathL (Wall _) = "assets/ball.png"
+
+setSprite :: FilePath -> IO Picture
+setSprite path = do mbpic <- loadJuicyPNG path
+                    return $ maybePicToIO mbpic
+
+{- Helper Functions-}
+
+-- Convert a maybe picture to a picture -> Blank picture in case of Nothing
+maybePicToIO :: Maybe Picture -> Picture
+maybePicToIO Nothing  = blank
+maybePicToIO (Just x) = x
+
+{-
 class Draw a where 
   draw :: a -> IO Picture
 
@@ -144,10 +187,4 @@ getFilePathL (Wall _) = "assets/ball.png"
 retSprite :: FilePath -> ObjectInfo -> IO Picture
 retSprite path (ObjectInfo c (Vec vx vy) (Pt px py) (Size w h)) = do mbpic <- loadJuicyPNG path
                                                                      return $ color c $ translate vx vy $ scale w h (maybePicToIO mbpic)
-
-{- Helper Functions-}
-
--- Convert a maybe picture to a picture -> Blank picture in case of Nothing
-maybePicToIO :: Maybe Picture -> Picture
-maybePicToIO Nothing  = blank
-maybePicToIO (Just x) = x
+-}
