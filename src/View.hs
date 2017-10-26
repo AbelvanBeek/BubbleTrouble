@@ -2,9 +2,10 @@
 --   the game state into a picture
 module View where
 
-import Graphics.Gloss.Juicy
 import Graphics.Gloss
+
 import Model
+import DrawLogic
 
 view :: GameState -> IO Picture
 view (GameState _ lvl _) = do x <- sequence $ drawLevel lvl                -- return . viewPure

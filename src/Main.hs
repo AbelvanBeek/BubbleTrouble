@@ -4,6 +4,7 @@ import Controller
 import HandleInput
 import Model
 import View
+import InitialStates
 
 import Graphics.Gloss.Interface.IO.Game
 
