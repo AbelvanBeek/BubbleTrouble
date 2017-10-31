@@ -35,13 +35,13 @@ inputKey (EventKey k Down _ _) gstate@(GameState status (Level p1 p1o p2 p2o ene
           Char 'g'            -> gstate { gameStatus = GameOver }
 
           -- P1 movement left and right
-          SpecialKey KeyLeft  -> gstate { level = (Level (newVelocity (-1) 0 p1) p1o p2 p2o enemies lvl) }
-          SpecialKey KeyRight -> gstate { level = (Level (newVelocity   1  0 p1) p1o p2 p2o enemies lvl) }
+          SpecialKey KeyLeft  -> gstate { level = (Level (newVelocity (-playerSpeed) 0 p1) p1o p2 p2o enemies lvl) }
+          SpecialKey KeyRight -> gstate { level = (Level (newVelocity   playerSpeed  0 p1) p1o p2 p2o enemies lvl) }
           SpecialKey KeyUp    -> gstate { level = (Level p1 (createArrow p1 p1o) p2 p2o enemies lvl) }
 
           -- P2 movement left and right
-          Char 'a'            -> gstate { level = (Level p1 p1o (newVelocity (-1) 0 p2) p2o enemies lvl) }
-          Char 'd'            -> gstate { level = (Level p1 p1o (newVelocity   1  0 p2) p2o enemies lvl) }
+          Char 'a'            -> gstate { level = (Level p1 p1o (newVelocity (-playerSpeed) 0 p2) p2o enemies lvl) }
+          Char 'd'            -> gstate { level = (Level p1 p1o (newVelocity   playerSpeed  0 p2) p2o enemies lvl) }
           Char 'w'            -> gstate { level = (Level p1 p1o p2 (createArrow p2 p2o) enemies lvl) }
 
           -- Game handling
@@ -98,12 +98,12 @@ inputKey (EventKey k Up _ _) gstate@(GameState status (Level p1 p1o p2 p2o enemi
           Char 'g'            -> gstate { gameStatus = GameOver }
 
           -- P1 movement left and right reverse
-          SpecialKey KeyLeft  -> gstate { level = (Level (newVelocity   1  0 p1) p1o p2 p2o enemies lvl) }
-          SpecialKey KeyRight -> gstate { level = (Level (newVelocity (-1) 0 p1) p1o p2 p2o enemies lvl) }
+          SpecialKey KeyLeft  -> gstate { level = (Level (newVelocity   playerSpeed  0 p1) p1o p2 p2o enemies lvl) }
+          SpecialKey KeyRight -> gstate { level = (Level (newVelocity (-playerSpeed) 0 p1) p1o p2 p2o enemies lvl) }
           
           -- P2 movement left and right reverse
-          Char 'a'            -> gstate { level = (Level p1 p1o (newVelocity   1  0 p2) p2o enemies lvl) }
-          Char 'd'            -> gstate { level = (Level p1 p1o (newVelocity (-1) 0 p2) p2o enemies lvl) }
+          Char 'a'            -> gstate { level = (Level p1 p1o (newVelocity   playerSpeed  0 p2) p2o enemies lvl) }
+          Char 'd'            -> gstate { level = (Level p1 p1o (newVelocity (-playerSpeed) 0 p2) p2o enemies lvl) }
 
           -- Game handling
           SpecialKey KeyEsc   -> error "Game closed"
@@ -143,6 +143,6 @@ newVelocity x y (Player (P2 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a)))  = (
 
 createArrow :: GameObjects -> [GameObjects] -> [GameObjects]
 createArrow player xs
-          = (PlayerObjects (Arrow (ObjectInfo red (0,5) (getPosition player) (Size 1 1)))) : xs
+          = (PlayerObjects (Arrow (ObjectInfo red (0,5) ((getX (getPosition player)),-1000) (Size 1 1)))) : xs
 
 
