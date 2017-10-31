@@ -8,28 +8,28 @@ import Model
 
 initialMenu :: GameState
 initialMenu = GameState Menu (Level 
-                                (Player(P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5)))
+                                (Player(P1 (PlayerInfo (ObjectInfo red (0,0) (0,0) (Size 1 1)) 0 No 5)))
                                 [] 
-                                (Player(P2 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5)))
+                                (Player(P2 (PlayerInfo (ObjectInfo red (0,0) (0,0) (Size 1 1)) 0 No 5)))
                                 [] 
-                                [EnemyObjects(Ball (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)))] 
+                                [EnemyObjects(Ball (ObjectInfo red (0,0) (0,0) (Size 1 1)))] 
                                 []) 0
 
 
 initialPlay :: GameState
 initialPlay = GameState Play (Level 
-                                (Player(P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5)))
+                                (Player(P1 (PlayerInfo (ObjectInfo red (0,0) (0,0) (Size 1 1)) 0 No 5)))
                                 [] 
-                                (Player(P2 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5)))
+                                (Player(P2 (PlayerInfo (ObjectInfo red (0,0) (0,0) (Size 1 1)) 0 No 5)))
                                 [] 
                                 [] 
                                 []) 0
 
 initialGameOver :: GameState
 initialGameOver = GameState GameOver (Level 
-                                        (Player(P1 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5)))
+                                        (Player(P1 (PlayerInfo (ObjectInfo red (0,0) (0,0) (Size 1 1)) 0 No 5)))
                                         [] 
-                                        (Player(P2 (PlayerInfo (ObjectInfo red (Vec 0 0) (Pt 0 0) (Size 1 1)) 0 No 5)))
+                                        (Player(P2 (PlayerInfo (ObjectInfo red (0,0) (0,0) (Size 1 1)) 0 No 5)))
                                         [] 
                                         [] 
                                         []) 0
