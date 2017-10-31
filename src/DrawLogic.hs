@@ -23,7 +23,10 @@ instance Draw GameObjects where
   draw o@(LevelObjects  (Wall           objectinfo))        = setSprite (getFilePath o) objectinfo
 
 getFilePath :: GameObjects -> FilePath
-getFilePath (Player _) = "assets/ball.png"
+getFilePath o@(Player _) 
+  | (getX $ getVelocity o) < 0 = "assets/P1Left.png"
+  | (getX $ getVelocity o) > 0 = "assets/P1Right.png"
+  | otherwise                  = "assets/P1Idle.png"
 getFilePath (PlayerObjects(Arrow _)) = "assets/arrow.png"
 getFilePath (EnemyObjects(Ball _)) = "assets/ball.png"
 getFilePath (LevelObjects(Wall _)) = "assets/ball.png"
