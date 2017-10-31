@@ -7,11 +7,17 @@ class Update a where
   
 instance Update GameObjects where
     update (Player        (P1 (PlayerInfo (ObjectInfo clr (Vec vx vy) (Pt px py)           size) d o n)))
-          = Player        (P1 (PlayerInfo (ObjectInfo clr (Vec 0 0)   (Pt (px+vx) (py+vy)) size) d o n))
-    update o@(Player        (P2 (PlayerInfo objectinfo _ _ _))) = o
-    update o@(PlayerObjects (Arrow          objectinfo))        = o
+          = Player        (P1 (PlayerInfo (ObjectInfo clr (Vec vx vy) (Pt (px+vx) (py+vy)) size) d o n))
+
+    update (Player        (P2 (PlayerInfo (ObjectInfo clr (Vec vx vy) (Pt px py)           size) d o n)))
+          = Player        (P2 (PlayerInfo (ObjectInfo clr (Vec vx vy) (Pt (px+vx) (py+vy)) size) d o n))
+
+    update (PlayerObjects (Arrow          (ObjectInfo clr (Vec vx vy) (Pt px py)           size)))
+          = PlayerObjects (Arrow          (ObjectInfo clr (Vec vx vy) (Pt (px+vx) (py+vy)) size))
+
     update (EnemyObjects  (Ball           (ObjectInfo clr (Vec vx vy) (Pt px py)           size))) 
           = EnemyObjects  (Ball           (ObjectInfo clr (Vec 0 0)   (Pt (px+vx) (py+vy)) size))
+
     update o@(LevelObjects  (Wall           objectinfo))        = o
 
 updateLevel :: Level -> Level
