@@ -67,3 +67,12 @@ inputKey _ gstate     = gstate
 
 newVelocity :: Float -> Float -> GameObjects -> GameObjects
 newVelocity x y (Player (P1 (PlayerInfo (ObjectInfo d (Vec vx vy) o n) t c a)))  = (Player (P1 (PlayerInfo (ObjectInfo d (Vec (vx+x) (vy+y)) o n) t c a)))
+
+createArrow :: Player -> Level -> Level
+createArrow (P1 _) (Level p1 p1o p2 p2o enemies lvl)
+          = Level p1 (PlayerObjects (Arrow (ObjectInfo red (Vec 0 1) (getPosition p1) (Size 1 1))) : p1o) p2 p2o enemies lvl
+createArrow (P2 _) (Level p1 p1o p2 p2o enemies lvl)
+          = Level p2 p1o p2 (PlayerObjects (Arrow (ObjectInfo red (Vec 0 1) (getPosition p2) (Size 1 1))) : p2o) enemies lvl
+
+getPosition :: GameObjects -> Pt
+getPosition (Player (P1 (PlayerInfo (ObjectInfo _ _ point _) _ _ _))) = point
