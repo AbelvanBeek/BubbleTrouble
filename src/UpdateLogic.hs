@@ -32,7 +32,7 @@ removeOutOfBounds :: [GameObjects] -> [GameObjects]
 removeOutOfBounds xs = filter checkInBounds xs
 
 checkInBounds :: GameObjects -> Bool
-checkInBounds obj = (getY (getPosition obj) < 200)
+checkInBounds obj = (getY (getPosition obj) < 540)
 
 updatePosition :: ObjectInfo -> ObjectInfo
 updatePosition (ObjectInfo clr (vx,vy) (px,py)           size)

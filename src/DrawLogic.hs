@@ -9,7 +9,7 @@ import HelperFunctions
 -- Given a level, all objects in that level will be drawn
 drawLevel :: Level -> [IO Picture]
 drawLevel (Level p1 p1o p2 p2o enemies lvl) 
-    = [draw p1] ++ (map draw p1o) ++ [draw p2] ++ (map draw p2o) ++ (map draw enemies) ++ (map draw lvl)
+    = (map draw p1o) ++ (map draw p2o) ++ [draw p1] ++ [draw p2] ++ (map draw enemies) ++ (map draw lvl)
 
 -- Given an object to draw, will return the correct IO picture for that object
 class Draw a where 
@@ -24,7 +24,7 @@ instance Draw GameObjects where
 
 getFilePath :: GameObjects -> FilePath
 getFilePath (Player _) = "assets/ball.png"
-getFilePath (PlayerObjects(Arrow _)) = "assets/ball.png"
+getFilePath (PlayerObjects(Arrow _)) = "assets/arrow.png"
 getFilePath (EnemyObjects(Ball _)) = "assets/ball.png"
 getFilePath (LevelObjects(Wall _)) = "assets/ball.png"
 
