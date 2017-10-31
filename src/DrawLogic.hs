@@ -30,4 +30,4 @@ getFilePath (LevelObjects(Wall _)) = "assets/ball.png"
 
 setSprite :: FilePath -> ObjectInfo -> IO Picture
 setSprite path (ObjectInfo c (Vec vx vy) (Pt px py) (Size w h)) = do mbpic <- loadJuicyPNG path
-                                                                     return $ translate px py $ maybePicToIO mbpic
+                                                                     return $ color c $ translate px py $ scale w h $ maybePicToIO mbpic

@@ -9,7 +9,7 @@ input e gstate = return (inputKey e gstate)
 
 inputKey :: Event -> GameState -> GameState
 -- If the user presses a character key, handle that one
-inputKey (EventKey k _ _ _) gstate@(GameState status _ _) = 
+inputKey (EventKey k _ _ _) gstate@(GameState status (Level p1 p1o p2 p2o enemies lvl) _) = 
   case status of
 
     Menu    ->
@@ -32,7 +32,7 @@ inputKey (EventKey k _ _ _) gstate@(GameState status _ _) =
           Char 'p'            -> gstate { gameStatus = Pause }
           Char 'm'            -> gstate { gameStatus = Menu }
           Char 'g'            -> gstate { gameStatus = GameOver }
-          SpecialKey KeySpace -> gstate { gameStatus = Play }
+          SpecialKey KeyLeft  -> gstate { level = (Level (newVelocity (-1) 0 p1) p1o p2 p2o enemies lvl) }
               
           -- Game handling
           SpecialKey KeyEsc   -> error "Game closed"
@@ -64,3 +64,6 @@ inputKey (EventKey k _ _ _) gstate@(GameState status _ _) =
 
 -- Handle other patterns than an EventKey
 inputKey _ gstate     = gstate
+
+newVelocity :: Float -> Float -> GameObjects -> GameObjects
+newVelocity x y (Player (P1 (PlayerInfo (ObjectInfo d (Vec vx vy) o n) t c a)))  = (Player (P1 (PlayerInfo (ObjectInfo d (Vec (vx+x) (vy+y)) o n) t c a)))
