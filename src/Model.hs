@@ -31,15 +31,9 @@ type Score = Int
 type Lives = Int
 
 -- Display data types
-data Pt    = Pt  { xpt  :: Float
-                 , ypt  :: Float 
-                 }
-data Vec   = Vec { xvec :: Float
-                 , yvex :: Float 
-                 }
 
-type Position = Pt
-type Velocity = Vec
+type Position = Point
+type Velocity = Vector
 
 data Size = Size { w :: Float
                  , h :: Float }

@@ -2,6 +2,7 @@ module HandleInput where
 
 import Model
 import Graphics.Gloss.Interface.IO.Game
+import HelperFunctions
 
 -- | Handle user input
 input :: Event -> GameState -> IO GameState
@@ -36,10 +37,12 @@ inputKey (EventKey k Down _ _) gstate@(GameState status (Level p1 p1o p2 p2o ene
           -- P1 movement left and right
           SpecialKey KeyLeft  -> gstate { level = (Level (newVelocity (-1) 0 p1) p1o p2 p2o enemies lvl) }
           SpecialKey KeyRight -> gstate { level = (Level (newVelocity   1  0 p1) p1o p2 p2o enemies lvl) }
+          SpecialKey KeyUp    -> gstate { level = (Level p1 (createArrow p1 p1o) p2 p2o enemies lvl) }
 
           -- P2 movement left and right
           Char 'a'            -> gstate { level = (Level p1 p1o (newVelocity (-1) 0 p2) p2o enemies lvl) }
           Char 'd'            -> gstate { level = (Level p1 p1o (newVelocity   1  0 p2) p2o enemies lvl) }
+          Char 'w'            -> gstate { level = (Level p1 p1o p2 (createArrow p2 p2o) enemies lvl) }
 
           -- Game handling
           SpecialKey KeyEsc   -> error "Game closed"
@@ -135,14 +138,11 @@ inputKey (EventKey k Up _ _) gstate@(GameState status (Level p1 p1o p2 p2o enemi
 inputKey _ gstate     = gstate
 
 newVelocity :: Float -> Float -> GameObjects -> GameObjects
-newVelocity x y (Player (P1 (PlayerInfo (ObjectInfo d (Vec vx vy) o n) t c a)))  = (Player (P1 (PlayerInfo (ObjectInfo d (Vec (vx+x) (vy+y)) o n) t c a)))
-newVelocity x y (Player (P2 (PlayerInfo (ObjectInfo d (Vec vx vy) o n) t c a)))  = (Player (P2 (PlayerInfo (ObjectInfo d (Vec (vx+x) (vy+y)) o n) t c a)))
+newVelocity x y (Player (P1 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a)))  = (Player (P1 (PlayerInfo (ObjectInfo d ((vx+x),(vy+y)) o n) t c a)))
+newVelocity x y (Player (P2 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a)))  = (Player (P2 (PlayerInfo (ObjectInfo d ((vx+x),(vy+y)) o n) t c a)))
 
-createArrow :: Player -> Level -> Level
-createArrow (P1 _) (Level p1 p1o p2 p2o enemies lvl)
-          = Level p1 (PlayerObjects (Arrow (ObjectInfo red (Vec 0 1) (getPosition p1) (Size 1 1))) : p1o) p2 p2o enemies lvl
-createArrow (P2 _) (Level p1 p1o p2 p2o enemies lvl)
-          = Level p2 p1o p2 (PlayerObjects (Arrow (ObjectInfo red (Vec 0 1) (getPosition p2) (Size 1 1))) : p2o) enemies lvl
+createArrow :: GameObjects -> [GameObjects] -> [GameObjects]
+createArrow player xs
+          = (PlayerObjects (Arrow (ObjectInfo red (0,5) (getPosition player) (Size 1 1)))) : xs
 
-getPosition :: GameObjects -> Pt
-getPosition (Player (P1 (PlayerInfo (ObjectInfo _ _ point _) _ _ _))) = point
+
