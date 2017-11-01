@@ -8,6 +8,7 @@ module Controller where
 
 import Model
 import UpdateLogic
+import HighScores
 
 -- | Handle one iteration of the game
 step :: Float -> GameState -> IO GameState
