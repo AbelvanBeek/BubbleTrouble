@@ -4,17 +4,19 @@ import Model
 
 readHighScores :: IO [HighScore]
 readHighScores = do x <- highscores
-                    return [ ((name),(read score)) | score <- listOfScores x, name <- listOfNames x]
-                    
-    where highscores = readFile "highscores.txt"
+                    return $ zip (listOfNames x) (map read (listOfScores x))                 
+    where highscores = readFile "assets/highscores.txt"
           listOfNames x = words $ (lines x) !! 0
           listOfScores x = words $ (lines x) !! 1
 
 writeHighScores :: [HighScore] -> IO()
-writeHighScores xs = writeFile "/assets/highscores.txt" highscores
+writeHighScores xs = writeFile "assets/highscores1.txt" highscores
     where names  = unwords [ name | (name,score) <- xs ]
           scores = unwords [ show score | (name,score) <- xs ]
           highscores = unlines ([names] ++ [scores])
 
+-- test function
 outputScores :: IO()
-outputScores = undefined
+outputScores = do x <- readHighScores
+                  writeHighScores x
+                  return ()
