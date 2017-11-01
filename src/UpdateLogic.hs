@@ -30,6 +30,7 @@ removeOutOfBounds :: [GameObjects] -> [GameObjects]
 removeOutOfBounds xs = filter checkInBounds xs
 
 checkInBounds :: GameObjects -> Bool
+checkInBounds o@(PlayerObjects _) = (getY (getPosition o) < -650)
 checkInBounds obj = (getY (getPosition obj) < 540)
 
 updatePosition :: ObjectInfo -> ObjectInfo

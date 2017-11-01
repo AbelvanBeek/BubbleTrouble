@@ -143,6 +143,6 @@ newVelocity x y (Player (P2 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a)))  = (
 
 createArrow :: GameObjects -> [GameObjects] -> [GameObjects]
 createArrow player xs
-          = (PlayerObjects (Arrow (ObjectInfo red (0,5) ((getX (getPosition player)),-1000) (Size 1 1)))) : xs
+          = (PlayerObjects (Arrow (ObjectInfo red (0,5) ((getX (getPosition player)),-1478) (Size 1 1)))) : xs
 
 
