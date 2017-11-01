@@ -29,6 +29,7 @@ data Level = Level { p1         :: GameObjects
 
 type Score = Int
 type Lives = Int
+type HighScore = (String, Int)
 
 -- Display data types
 
