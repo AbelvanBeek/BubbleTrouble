@@ -5,6 +5,7 @@ import Graphics.Gloss.Juicy
 
 import Model
 import HelperFunctions
+import LoadPictures
 
 -- Given a level, all objects in that level will be drawn
 drawLevel :: Level -> [IO Picture]
@@ -22,15 +23,15 @@ instance Draw GameObjects where
   draw o@(EnemyObjects  (Ball           objectinfo))        = setSprite (getFilePath o) objectinfo
   draw o@(LevelObjects  (Wall           objectinfo))        = setSprite (getFilePath o) objectinfo
 
-getFilePath :: GameObjects -> FilePath
+getFilePath :: GameObjects -> IO Picture
 getFilePath o@(Player _) 
-  | (getX $ getVelocity o) < 0 = "assets/P1Left.png"
-  | (getX $ getVelocity o) > 0 = "assets/P1Right.png"
-  | otherwise                  = "assets/P1Idle.png"
-getFilePath (PlayerObjects(Arrow _)) = "assets/arrow.png"
-getFilePath (EnemyObjects(Ball _)) = "assets/ball.png"
-getFilePath (LevelObjects(Wall _)) = "assets/ball.png"
+  | (getX $ getVelocity o) < 0 = loadPictures !! 0
+  | (getX $ getVelocity o) > 0 = loadPictures !! 1
+  | otherwise                  = loadPictures !! 2
+getFilePath (PlayerObjects(Arrow _)) = loadPictures !! 3
+getFilePath (EnemyObjects(Ball _)) = loadPictures !! 4
+getFilePath (LevelObjects(Wall _)) = loadPictures !! 4
 
-setSprite :: FilePath -> ObjectInfo -> IO Picture
-setSprite path (ObjectInfo c (vx,vy) (px,py) (Size w h)) = do mbpic <- loadJuicyPNG path
-                                                              return $ color c $ translate px py $ scale w h $ maybePicToIO mbpic
+setSprite :: IO Picture -> ObjectInfo -> IO Picture
+setSprite picture (ObjectInfo c (vx,vy) (px,py) (Size w h)) = do pic <- picture
+                                                                 return $ color c $ translate px py $ scale w h pic
