@@ -2,6 +2,8 @@ module UpdateLogic where
     
 import Model
 import HelperFunctions
+import Data.List
+import Data.Maybe
 
 class Update a where 
     update :: a -> a
@@ -20,7 +22,7 @@ instance Update GameObjects where
 
 updateLevel :: Level -> Level
 updateLevel (Level p1 p1o p2 p2o enemies lvl) 
-            = Level (update p1) (map update p1o) (update p2) (map update p2o) (map update enemies) (map update lvl)
+            = handleBallCollisions (Level (update p1) (map update p1o) (update p2) (map update p2o) (map update enemies) (map update lvl))
 
 filterLevel :: Level -> Level
 filterLevel (Level p1 p1o p2 p2o enemies lvl) 
@@ -39,6 +41,49 @@ checkSideCollision (ObjectInfo _ (vx,vy) (px, py) size)     | (px + vx) < ((-640
                                                             | otherwise = False
 checkFloorCollision (ObjectInfo _ (vx,vy) (px, py) size)    | (py + vy) < (-360 + 50) = True
                                                             | otherwise = False
+                                          
+handleBallCollisions ::  Level -> Level
+handleBallCollisions (Level p1 p1o p2 p2o enemies lvl) = (Level p1 (filterindices p1arrowindices p1o) p2 (filterindices p2arrowindices p2o) (splitballs balls enemies) lvl)
+      where p1indices = collisionindices 0 p1o enemies
+            p1arrowindices = reverse (sort (map fst p1indices))
+            p2indices = collisionindices 0 p2o enemies
+            p2arrowindices = reverse (sort (map fst p2indices))
+            balls = reverse (sort ((map snd p1indices) ++ (map snd p2indices)))
+
+filterindices :: [Int] -> [a] -> [a]
+filterindices [] a = a
+filterindices _ [] = []
+filterindices [x] list = (fst split) ++ (tail (snd split))
+      where split = splitAt x list 
+filterindices (x:xs) list = (fst split) ++ (tail (snd split)) ++ (filterindices xs list)
+      where split = splitAt x list
+
+splitballs :: [Int] -> [GameObjects] -> [GameObjects]
+splitballs [] a = a
+splitballs _ [] = []
+splitballs [x] list = (fst split) ++ (tail (snd split)) ++ (splitb (list!!x))
+      where split = splitAt x list 
+splitballs (x:xs) list = (fst split) ++ (tail (snd split)) ++ (filterindices xs list)
+      where split = splitAt x list
+
+splitb :: GameObjects -> [GameObjects] -- split into two half balls
+splitb (EnemyObjects (Ball (ObjectInfo a (x,y) c (Size w h) ))) = ((EnemyObjects (Ball (ObjectInfo a ((-x), y + 5) c halfsize))) : (EnemyObjects (Ball (ObjectInfo a (x,y + 5) c halfsize))) : [])
+      where halfsize = Size (w / 2) (h / 2)
+
+collisionindices :: Int -> [GameObjects] -> [GameObjects] -> [(Int,Int)]
+collisionindices _ [] _ = []
+collisionindices x (arrow:arrows) enemies | (collided arrow enemies) == Nothing = collisionindices (x+1) arrows enemies
+                                          | otherwise = (x, (fromJust (collided arrow enemies))) : collisionindices (x+1) arrows enemies
+                                          --if it collided return its own index + the index of the ball hit
+
+collided :: GameObjects -> [GameObjects] -> Maybe Int
+collided arrow [] = Nothing
+collided arrow balls = findIndex (collision arrow) balls
+
+collision :: GameObjects -> GameObjects -> Bool                                                     -- Arrow is higher than ball  and withing 50 x pixels of it
+collision (PlayerObjects (Arrow (ObjectInfo _ (avx,avy) (ax, ay) _))) (EnemyObjects (Ball (ObjectInfo _ (bvx,bvy) (bx, by) size)))
+            | (((ay + avy + 1200) > (by + bvy)) && (abs (ax - (bx + bvx))) < 50) = True
+            | otherwise = False
 
 updatePosition :: ObjectInfo -> ObjectInfo
 updatePosition (ObjectInfo clr (vx,vy) (px,py)           size)
