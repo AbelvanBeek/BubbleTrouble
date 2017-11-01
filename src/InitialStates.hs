@@ -22,7 +22,7 @@ initialPlay = GameState Play (Level
                                 [] 
                                 (Player(P2 (PlayerInfo (ObjectInfo red (0,0) (0,-400) (Size 1 1)) 0 No 5)))
                                 [] 
-                                [] 
+                                [EnemyObjects(Ball (ObjectInfo red (0,0) (0,0) (Size 1 1)))] 
                                 []) 0
 
 initialGameOver :: GameState
