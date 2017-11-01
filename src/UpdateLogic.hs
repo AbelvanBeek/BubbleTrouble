@@ -14,7 +14,7 @@ instance Update GameObjects where
     update (PlayerObjects  (Arrow                          objectinfo))
           = PlayerObjects  (Arrow          (updatePosition objectinfo))
     update (EnemyObjects   (Ball objectinfo)) 
-          = EnemyObjects   (Ball           (updatePosition objectinfo))
+          = EnemyObjects   (Ball           (updatePosition (adjustVelocity (0) (-0.05) objectinfo)))
     update o@(LevelObjects (Wall                           objectinfo))
           = LevelObjects   (Wall           (updatePosition objectinfo))
 
@@ -33,6 +33,13 @@ checkInBounds :: GameObjects -> Bool
 checkInBounds o@(PlayerObjects _) = (getY (getPosition o) < -650)
 checkInBounds obj = (getY (getPosition obj) < 540)
 
+checkSideCollision, checkFloorCollision :: ObjectInfo -> Bool
+checkSideCollision (ObjectInfo _ (vx,vy) (px, py) size)     | (px + vx) < ((-640) + 50) = True --50 is half the width of the sprite 
+                                                            | (px + vx) > (640 - 50) = True
+                                                            | otherwise = False
+checkFloorCollision (ObjectInfo _ (vx,vy) (px, py) size)    | (py + vy) < (-360 + 50) = True
+                                                            | otherwise = False
+
 updatePosition :: ObjectInfo -> ObjectInfo
 updatePosition (ObjectInfo clr (vx,vy) (px,py)           size)
             =  (ObjectInfo clr (vx,vy) ((px+vx),(py+vy)) size)
@@ -40,6 +47,14 @@ updatePosition (ObjectInfo clr (vx,vy) (px,py)           size)
 newVelocity :: Float -> Float -> GameObjects -> GameObjects
 newVelocity x y (Player (P1 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a)))  = (Player (P1 (PlayerInfo (ObjectInfo d ((vx+x),(vy+y)) o n) t c a)))
 newVelocity x y (Player (P2 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a)))  = (Player (P2 (PlayerInfo (ObjectInfo d ((vx+x),(vy+y)) o n) t c a)))
+
+adjustVelocity :: Float -> Float -> ObjectInfo -> ObjectInfo
+adjustVelocity x y obj@(ObjectInfo clr (vx,vy) pos size) | (checkSideCollision obj) && (checkFloorCollision obj) = (ObjectInfo clr ((-(vx + x)),(-(vy + y))) pos size)
+                                                         | (checkSideCollision obj) = (ObjectInfo clr ((-(vx + x)),(vy + y)) pos size)
+                                                         | (checkFloorCollision obj) = (ObjectInfo clr ((vx + x),(-(vy + y))) pos size)
+                                                         | otherwise = (ObjectInfo clr (((vx + x)),(vy + y)) pos size)
+
+
 
 
 
