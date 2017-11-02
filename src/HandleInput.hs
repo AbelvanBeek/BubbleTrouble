@@ -29,7 +29,7 @@ inputKey (EventKey k Down _ _) gstate@(GameState status (Level p1 p1o p2 p2o ene
       case k of
           -- Player movements
           Char 'p'            -> gstate { gameStatus = Pause }
-          Char 'g'            -> initialGameOver
+          Char 'g'            -> gstate { gameStatus = GameOver }
 
           -- P1 movement left and right
           SpecialKey KeyLeft  -> gstate { level = (Level (newVelocity (-playerSpeed) 0 p1) p1o p2 p2o enemies lvl) }

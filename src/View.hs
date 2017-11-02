@@ -5,6 +5,7 @@ module View where
 import Graphics.Gloss
 
 import Model
+import HighScores
 import DrawLogic
 
 view :: GameState -> IO Picture
@@ -17,4 +18,5 @@ viewPure gstate = case gstate of
                                       return (pictures x)
     GameState Pause lvl _      ->  do x <- sequence $ drawLevel lvl
                                       return (pictures ((translate (-325) 0 $ color blue (text (show ".:Paused:."))) : x))
-    GameState GameOver lvl _   ->  return $ translate (-350) 0 $ color black (text (show ".:GameOver:."))
+    GameState GameOver lvl _   ->  do updateHighScores lvl
+                                      return $ translate (-350) 0 $ color black (text (show ".:GameOver:."))
