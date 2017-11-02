@@ -1,17 +1,18 @@
 module HighScores where
 
 import Model
+import System.IO.Strict as S
 
 readHighScores :: IO [HighScore]
 readHighScores = do x <- highscores
                     return $ zip (listOfNames x) (map read (listOfScores x))                 
-    where highscores = readFile "assets/highscores.txt"
+    where highscores = S.readFile "assets/highscores.txt"
           listOfNames x = words $ (lines x) !! 0
           listOfScores x = words $ (lines x) !! 1
 
 writeHighScores :: IO [HighScore] -> IO()
 writeHighScores xs = do x <- xs
-                        writeFile "assets/highscores1.txt" (unlines ([unwords [ name | (name,score) <- x ]] ++ [unwords [ show score | (name,score) <- x ]]))
+                        writeFile "assets/highscores.txt" (unlines ([unwords [ name | (name,score) <- x ]] ++ [unwords [ show score | (name,score) <- x ]]))
                         return ()
 
 updateHighScores :: Level -> IO()
