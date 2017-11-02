@@ -6,6 +6,15 @@ import Model
 playerSpeed :: Float
 playerSpeed = 5
 
+ballSpeed :: Float
+ballSpeed = 3
+
+ballHitY :: Float
+ballHitY = 5
+
+halfBallSprite :: Float
+halfBallSprite = 50
+
 -- Convert a maybe picture to a picture -> Blank picture in case of Nothing
 maybePicToIO :: Maybe Picture -> Picture
 maybePicToIO Nothing  = blank
