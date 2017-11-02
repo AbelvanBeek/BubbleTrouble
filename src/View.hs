@@ -8,12 +8,13 @@ import Model
 import DrawLogic
 
 view :: GameState -> IO Picture
-view (GameState _ lvl _) = do x <- sequence $ drawLevel lvl                -- return . viewPure
-                              return (pictures x)
+view gstate = viewPure gstate
 
-viewPure :: GameState -> Picture
+viewPure :: GameState -> IO Picture
 viewPure gstate = case gstate of
-    GameState Menu lvl _       ->  color green (text (show "Menu"))
-    GameState Play lvl _       ->  color green (text (show "Play"))
-    GameState Pause lvl _      ->  color blue (text (show "Pause"))
-    GameState GameOver lvl _   ->  color white (text (show "GameOver"))
+    GameState Menu lvl _       ->  return $ translate (-560) 0 $ color green (text (show ".:Bubble Trouble:."))
+    GameState Play lvl _       ->  do x <- sequence $ drawLevel lvl
+                                      return (pictures x)
+    GameState Pause lvl _      ->  do x <- sequence $ drawLevel lvl
+                                      return (pictures ((translate (-325) 0 $ color blue (text (show ".:Paused:."))) : x))
+    GameState GameOver lvl _   ->  return $ translate (-350) 0 $ color black (text (show ".:GameOver:."))

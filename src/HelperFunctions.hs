@@ -6,6 +6,9 @@ import Model
 playerSpeed :: Float
 playerSpeed = 5
 
+arrowAmount :: Int
+arrowAmount = 1
+
 -- Convert a maybe picture to a picture -> Blank picture in case of Nothing
 maybePicToPic :: Maybe Picture -> Picture
 maybePicToPic Nothing  = blank

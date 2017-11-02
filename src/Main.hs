@@ -12,7 +12,7 @@ main :: IO ()
 main = playIO (InWindow "1280x720" (1280,720) (0,0) )      -- Or FullScreen
               white            -- Background color
               60               -- Frames per second
-              initialPlay      -- Initial state
+              initialMenu      -- Initial state
               view             -- View function
               input            -- Event function
               step             -- Step function

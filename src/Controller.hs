@@ -12,4 +12,5 @@ import HighScores
 
 -- | Handle one iteration of the game
 step :: Float -> GameState -> IO GameState
-step secs gstate@(GameState _ lvl _)    =   return $ gstate { level = updateLevel $ filterLevel lvl }
+step secs gstate@(GameState Play lvl _)    =   return $ gstate { level = updateLevel $ filterLevel lvl }
+step secs gstate@(GameState _ lvl _)   =   return $ gstate

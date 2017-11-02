@@ -2,6 +2,7 @@ module DrawLogic where
 
 import Graphics.Gloss
 import Graphics.Gloss.Juicy
+import System.Random
 
 import Model
 import HelperFunctions
@@ -31,6 +32,9 @@ getFilePath o@(Player _)
 getFilePath (PlayerObjects(Arrow _)) = loadPictures !! 3
 getFilePath (EnemyObjects(Ball _)) = loadPictures !! 4
 getFilePath (LevelObjects(Wall _)) = loadPictures !! 4
+
+getRandom :: Int -> Int -> IO Int
+getRandom x y = randomRIO (x,y)
 
 setSprite :: IO Picture -> ObjectInfo -> IO Picture
 setSprite picture (ObjectInfo c (vx,vy) (px,py) (Size w h)) = do pic <- picture
