@@ -16,9 +16,9 @@ halfBallSprite :: Float
 halfBallSprite = 50
 
 -- Convert a maybe picture to a picture -> Blank picture in case of Nothing
-maybePicToIO :: Maybe Picture -> Picture
-maybePicToIO Nothing  = blank
-maybePicToIO (Just x) = x
+maybePicToPic :: Maybe Picture -> Picture
+maybePicToPic Nothing  = blank
+maybePicToPic (Just x) = x
 
 getPosition, getVelocity :: GameObjects -> Point
 getPosition (Player (P1 (PlayerInfo objectinfo _ _ _))) = getPos objectinfo
