@@ -8,6 +8,14 @@ playerSpeed = 5
 
 arrowAmount :: Int
 arrowAmount = 1
+ballSpeed :: Float
+ballSpeed = 3
+
+ballHitY :: Float
+ballHitY = 5
+
+halfBallSprite :: Float
+halfBallSprite = 50
 
 -- Convert a maybe picture to a picture -> Blank picture in case of Nothing
 maybePicToPic :: Maybe Picture -> Picture
