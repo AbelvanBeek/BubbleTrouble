@@ -50,12 +50,18 @@ checkNoRoofCollision (EnemyObjects (Ball (ObjectInfo _ (vx,vy) (x,y) (Size w h) 
                                                                                            where adjustsize = halfBallSprite * w * w
                                           
 handleBallCollisions ::  Level -> Level
-handleBallCollisions (Level p1 p1o p2 p2o enemies lvl) = (Level p1 (filterindices p1arrowindices p1o) p2 (filterindices p2arrowindices p2o) (splitballs balls enemies) lvl)
+handleBallCollisions (Level p1 p1o p2 p2o enemies lvl) = (Level (updateScore p1score p1) (filterindices p1arrowindices p1o) (updateScore p2score p2) (filterindices p2arrowindices p2o) (splitballs balls enemies) lvl)
       where p1indices = collisionindices 0 p1o enemies 
-            p1arrowindices = reverse (sort (map fst p1indices)) --Indices of all p1Arrows that hit a ball
+            p1arrowindices =  (sort (map fst p1indices)) --Indices of all p1Arrows that hit a ball
             p2indices = collisionindices 0 p2o enemies 
-            p2arrowindices = reverse (sort (map fst p2indices)) --Indices of all p1Arrows that hit a ball
-            balls = nub (reverse (sort ((map snd p1indices) ++ (map snd p2indices))))
+            p2arrowindices =  (sort (map fst p2indices)) --Indices of all p1Arrows that hit a ball
+            balls = nub (sort ((map snd p1indices) ++ (map snd p2indices)))
+            p1score = (length p1indices) * 500
+            p2score = (length p2indices) * 500
+
+updateScore :: Int -> GameObjects -> GameObjects
+updateScore n (Player (P1 (PlayerInfo a score b c))) = (Player (P1 (PlayerInfo a (score + n) b c)))
+updateScore n (Player (P2 (PlayerInfo a score b c))) = (Player (P2 (PlayerInfo a (score + n) b c)))
 
 filterindices :: [Int] -> [a] -> [a]
 filterindices [] a = a
@@ -84,7 +90,7 @@ collisionindices _ [] _ = []
 collisionindices x (arrow:arrows) enemies | (collided arrow enemies) == Nothing = collisionindices (x+1) arrows enemies
                                           | otherwise = (x, (fromJust (collided arrow enemies))) : collisionindices (x+1) arrows enemies
                                           --if it collided return its own index + the index of the ball hit
-
+-- Arrow checks collision with every ball, and returns the index of the ball it hit.
 collided :: GameObjects -> [GameObjects] -> Maybe Int
 collided arrow [] = Nothing
 collided arrow balls = findIndex (collision arrow) balls
@@ -96,6 +102,22 @@ collision (PlayerObjects (Arrow (ObjectInfo _ (avx,avy) (ax, ay) _))) (EnemyObje
             --                                                      absolute x dist between arrow and ball smaller than width of the arrow
             | otherwise = False
                   where adjustsize = halfBallSprite * w
+collision (Player (P1 (PlayerInfo (ObjectInfo _ (pvx,pvy) (px,py) _) _ _ _))) (EnemyObjects (Ball (ObjectInfo _ (bvx,bvy) (bx, by) (Size w h))))
+            | (abs ((px + pvx) - (bx + bvx + adjustsize)) < 50) && (abs ((py + pvy) - (by + bvy + adjustsize)) < 50) = True
+            | otherwise = False
+            --50 needs to be changed with player sprite
+                  where adjustsize = halfBallSprite * w
+collision (Player (P2 (PlayerInfo (ObjectInfo _ (pvx,pvy) (px,py) _) _ _ _))) (EnemyObjects (Ball (ObjectInfo _ (bvx,bvy) (bx, by) (Size w h))))
+            | (abs ((px + pvx) - (bx + bvx)) < 40 + adjustsize) && (abs ((py + pvy) - (by + bvy)) < 40 + adjustsize) = True
+            | otherwise = False
+            --50 needs to be changed with player sprite
+                   where adjustsize = halfBallSprite * w
+
+checkGameOver :: Level -> Bool
+checkGameOver (Level p1 p1o p2 p2o enemies lvl) = (checkPlayerCollision enemies p1) || (checkPlayerCollision enemies p2)
+
+checkPlayerCollision :: [GameObjects] -> GameObjects -> Bool
+checkPlayerCollision balls player = elem True (map (collision player) balls)
 
 updatePosition :: ObjectInfo -> ObjectInfo
 updatePosition (ObjectInfo clr (vx,vy) (px,py) size) =  (ObjectInfo clr (vx,vy) ((px+vx),(py+vy)) size)
