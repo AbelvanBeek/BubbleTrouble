@@ -1,2 +1,2 @@
-Player 1 Player 2
-0 0
+Player_1 Player_2
+2000 0
