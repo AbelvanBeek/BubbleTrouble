@@ -18,8 +18,14 @@ class Draw a where
   draw :: a -> IO Picture
 
 instance Draw GameObjects where
-  draw o@(Player        (P1 (PlayerInfo objectinfo _ _ _))) = setSprite (getFilePath o) objectinfo
-  draw o@(Player        (P2 (PlayerInfo objectinfo _ _ _))) = setSprite (getFilePath o) objectinfo
+  draw o@(Player        (P1 (PlayerInfo objectinfo score _ _))) = let x = translate (-600) 300 $ scale 0.2 0.2 $ color red $ text (y ++ show score) 
+                                                                      y = "Player 1: " in 
+                                                                  do sprite <- setSprite (getFilePath o) objectinfo
+                                                                     return $ pictures [sprite, x]
+  draw o@(Player        (P2 (PlayerInfo objectinfo score _ _))) = let x = translate 400 300 $ scale 0.2 0.2 $ color blue $ text (y ++ show score)
+                                                                      y = "Player 2: " in 
+                                                                  do sprite <- setSprite (getFilePath o) objectinfo
+                                                                     return $ pictures [sprite, x]
   draw o@(PlayerObjects (Arrow          objectinfo))        = setSprite (getFilePath o) objectinfo
   draw o@(EnemyObjects  (Ball           objectinfo))        = setSprite (getFilePath o) objectinfo
   draw o@(LevelObjects  (Wall           objectinfo))        = setSprite (getFilePath o) objectinfo
@@ -32,9 +38,6 @@ getFilePath o@(Player _)
 getFilePath (PlayerObjects(Arrow _)) = loadPictures !! 3
 getFilePath (EnemyObjects(Ball _)) = loadPictures !! 4
 getFilePath (LevelObjects(Wall _)) = loadPictures !! 4
-
-getRandom :: Int -> Int -> IO Int
-getRandom x y = randomRIO (x,y)
 
 setSprite :: IO Picture -> ObjectInfo -> IO Picture
 setSprite picture (ObjectInfo c (vx,vy) (px,py) (Size w h)) = do pic <- picture

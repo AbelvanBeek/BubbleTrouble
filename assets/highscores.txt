@@ -1,2 +1,2 @@
-jemoeder jegoudvis
-20 30
+Player_1 Player_2
+2000 0
