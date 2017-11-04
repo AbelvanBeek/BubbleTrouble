@@ -45,7 +45,7 @@ checkFloorCollision (ObjectInfo _ (vx,vy) (px, py) (Size w h))    | (py + vy) < 
                                                                         where adjustsize = halfBallSprite * w * w
 
 checkNoRoofCollision :: GameObjects -> Bool
-checkNoRoofCollision (EnemyObjects (Ball (ObjectInfo _ (vx,vy) (x,y) (Size w h) ))) | ((vy + y) > (360 - adjustsize)) = False
+checkNoRoofCollision (EnemyObjects (Ball (ObjectInfo _ (vx,vy) (x,y) (Size w h) ))) | ((vy + y) > (350 - adjustsize)) = False
                                                                                     | otherwise = True
                                                                                            where adjustsize = halfBallSprite * w * w
                                           
