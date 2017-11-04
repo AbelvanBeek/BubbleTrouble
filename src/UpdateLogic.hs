@@ -103,15 +103,19 @@ collision (PlayerObjects (Arrow (ObjectInfo _ (avx,avy) (ax, ay) _))) (EnemyObje
             | otherwise = False
                   where adjustsize = halfBallSprite * w
 collision (Player (P1 (PlayerInfo (ObjectInfo _ (pvx,pvy) (px,py) _) _ _ _))) (EnemyObjects (Ball (ObjectInfo _ (bvx,bvy) (bx, by) (Size w h))))
-            | (abs ((px + pvx) - (bx + bvx + adjustsize)) < 50) && (abs ((py + pvy) - (by + bvy + adjustsize)) < 50) = True
+            | (sqrt ((xdistance*xdistance) + (ydistance * ydistance) ) < halfPlayerSprite + adjustsize) = True
+            | otherwise = False
+            -- needs to be changed with player sprite
+                  where adjustsize = halfBallSprite * w
+                        xdistance = abs ((px + pvx) - (bx + bvx))
+                        ydistance = abs ((py + pvy) - (by + bvy))
+collision (Player (P2 (PlayerInfo (ObjectInfo _ (pvx,pvy) (px,py) _) _ _ _))) (EnemyObjects (Ball (ObjectInfo _ (bvx,bvy) (bx, by) (Size w h))))
+            | (sqrt ((xdistance*xdistance) + (ydistance * ydistance) ) < halfPlayerSprite + adjustsize) = True
             | otherwise = False
             --50 needs to be changed with player sprite
                   where adjustsize = halfBallSprite * w
-collision (Player (P2 (PlayerInfo (ObjectInfo _ (pvx,pvy) (px,py) _) _ _ _))) (EnemyObjects (Ball (ObjectInfo _ (bvx,bvy) (bx, by) (Size w h))))
-            | (abs ((px + pvx) - (bx + bvx)) < 40 + adjustsize) && (abs ((py + pvy) - (by + bvy)) < 40 + adjustsize) = True
-            | otherwise = False
-            --50 needs to be changed with player sprite
-                   where adjustsize = halfBallSprite * w
+                        xdistance = abs ((px + pvx) - (bx + bvx))
+                        ydistance = abs ((py + pvy) - (by + bvy))
 
 checkGameOver :: Level -> Bool
 checkGameOver (Level p1 p1o p2 p2o enemies lvl) = (checkPlayerCollision enemies p1) || (checkPlayerCollision enemies p2)

@@ -17,6 +17,9 @@ ballHitY = 5
 halfBallSprite :: Float
 halfBallSprite = 50
 
+halfPlayerSprite :: Float
+halfPlayerSprite = 30
+
 -- Convert a maybe picture to a picture -> Blank picture in case of Nothing
 maybePicToPic :: Maybe Picture -> Picture
 maybePicToPic Nothing  = blank
