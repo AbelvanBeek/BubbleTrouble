@@ -41,7 +41,7 @@ inputKey (EventKey k Down _ _) gstate@(GameState status (Level p1 p1o p2 p2o ene
           -- P2 movement left and right
           Char 'a'            -> gstate { level = (Level p1 p1o (newVelocity (-playerSpeed) 0 p2) p2o enemies lvl) }
           Char 'd'            -> gstate { level = (Level p1 p1o (newVelocity   playerSpeed  0 p2) p2o enemies lvl) }
-          Char 'w'            -> if length p1o < arrowAmount then gstate { level = (Level p1 p1o p2 (createArrow p2 p2o) enemies lvl) }
+          Char 'w'            -> if length p2o < arrowAmount then gstate { level = (Level p1 p1o p2 (createArrow p2 p2o) enemies lvl) }
                                                              else gstate
 
           -- Game handling
