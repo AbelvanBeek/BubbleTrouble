@@ -8,8 +8,9 @@ import Model
 import HighScores
 import DrawLogic
 
-view :: GameState -> IO Picture
-view gstate = viewPure gstate
+view :: IO GameState -> IO Picture
+view gstat = do gstate <- gstat
+                viewPure gstate
 
 viewPure :: GameState -> IO Picture
 viewPure gstate = case gstate of
