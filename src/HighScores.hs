@@ -16,7 +16,7 @@ writeHighScores xs = do x <- xs
                         return ()
 
 updateHighScores :: Level -> IO()
-updateHighScores (Level p1 _ p2 _ _ _) = writeHighScores $ topHighScore readHighScores $ getScore p1 p2
+updateHighScores (Level p1 _ p2 _ _ _ _) = writeHighScores $ topHighScore readHighScores $ getScore p1 p2
 
 getScore :: GameObjects -> GameObjects -> [HighScore]
 getScore (Player (P1 (PlayerInfo _ p1score _ _))) (Player (P2 (PlayerInfo _ p2score _ _))) = [("Player_1", p1score), ("Player_2", p2score)]

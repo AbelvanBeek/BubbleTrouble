@@ -12,7 +12,7 @@ input e gstate = do gstat <- gstate
 
 inputKey :: Event -> GameState -> IO GameState
 -- If the user presses a character key, handle that one
-inputKey (EventKey k Down _ _) gstate@(GameState status (Level p1 p1o p2 p2o enemies lvl) _) = 
+inputKey (EventKey k Down _ _) gstate@(GameState status (Level p1 p1o p2 p2o enemies lvl ani) _) = 
   case status of
 
     Menu    ->
@@ -33,16 +33,16 @@ inputKey (EventKey k Down _ _) gstate@(GameState status (Level p1 p1o p2 p2o ene
           Char 'g'            -> return $ gstate { gameStatus = GameOver }
 
           -- P1 movement left and right
-          SpecialKey KeyLeft  -> return $ gstate { level = (Level (newVelocity (-playerSpeed) 0 p1) p1o p2 p2o enemies lvl) }
-          SpecialKey KeyRight -> return $ gstate { level = (Level (newVelocity   playerSpeed  0 p1) p1o p2 p2o enemies lvl) }
+          SpecialKey KeyLeft  -> return $ gstate { level = (Level (newVelocity (-playerSpeed) 0 p1) p1o p2 p2o enemies lvl ani) }
+          SpecialKey KeyRight -> return $ gstate { level = (Level (newVelocity   playerSpeed  0 p1) p1o p2 p2o enemies lvl ani) }
           -- Max arrows = 1
-          SpecialKey KeyUp    -> if length p1o < arrowAmount then return $ gstate { level = (Level p1 (createArrow p1 p1o) p2 p2o enemies lvl) } 
+          SpecialKey KeyUp    -> if length p1o < arrowAmount then return $ gstate { level = (Level p1 (createArrow p1 p1o) p2 p2o enemies lvl ani) } 
                                                              else return $ gstate
 
           -- P2 movement left and right
-          Char 'a'            -> return $ gstate { level = (Level p1 p1o (newVelocity (-playerSpeed) 0 p2) p2o enemies lvl) }
-          Char 'd'            -> return $ gstate { level = (Level p1 p1o (newVelocity   playerSpeed  0 p2) p2o enemies lvl) }
-          Char 'w'            -> if length p2o < arrowAmount then return $ gstate { level = (Level p1 p1o p2 (createArrow p2 p2o) enemies lvl) }
+          Char 'a'            -> return $ gstate { level = (Level p1 p1o (newVelocity (-playerSpeed) 0 p2) p2o enemies lvl ani) }
+          Char 'd'            -> return $ gstate { level = (Level p1 p1o (newVelocity   playerSpeed  0 p2) p2o enemies lvl ani) }
+          Char 'w'            -> if length p2o < arrowAmount then return $ gstate { level = (Level p1 p1o p2 (createArrow p2 p2o) enemies lvl ani) }
                                                              else return $ gstate
 
           -- Game handling
@@ -72,15 +72,15 @@ inputKey (EventKey k Down _ _) gstate@(GameState status (Level p1 p1o p2 p2o ene
           _                   -> return $ gstate
 
 -- Reverse Player Movements (Other things can be removed, but lets keep em here in case we need them further on)
-inputKey (EventKey k Up _ _) gstate@(GameState Play (Level p1 p1o p2 p2o enemies lvl) _) = 
+inputKey (EventKey k Up _ _) gstate@(GameState Play (Level p1 p1o p2 p2o enemies lvl ani) _) = 
   case k of
     -- P1 movement left and right reverse
-    SpecialKey KeyLeft  -> return $ gstate { level = (Level (newVelocity   playerSpeed  0 p1) p1o p2 p2o enemies lvl) }
-    SpecialKey KeyRight -> return $ gstate { level = (Level (newVelocity (-playerSpeed) 0 p1) p1o p2 p2o enemies lvl) }
+    SpecialKey KeyLeft  -> return $ gstate { level = (Level (newVelocity   playerSpeed  0 p1) p1o p2 p2o enemies lvl ani) }
+    SpecialKey KeyRight -> return $ gstate { level = (Level (newVelocity (-playerSpeed) 0 p1) p1o p2 p2o enemies lvl ani) }
           
     -- P2 movement left and right reverse
-    Char 'a'            -> return $ gstate { level = (Level p1 p1o (newVelocity   playerSpeed  0 p2) p2o enemies lvl) }
-    Char 'd'            -> return $ gstate { level = (Level p1 p1o (newVelocity (-playerSpeed) 0 p2) p2o enemies lvl) }
+    Char 'a'            -> return $ gstate { level = (Level p1 p1o (newVelocity   playerSpeed  0 p2) p2o enemies lvl ani) }
+    Char 'd'            -> return $ gstate { level = (Level p1 p1o (newVelocity (-playerSpeed) 0 p2) p2o enemies lvl ani) }
               
     -- Not recognized
     _                   -> return $ gstate

@@ -9,8 +9,8 @@ import LoadPictures
 
 -- Given a level, all objects in that level will be drawn
 drawLevel :: Level -> [IO Picture]
-drawLevel (Level p1 p1o p2 p2o enemies lvl) 
-    = (map draw p1o) ++ (map draw p2o) ++ [draw p1] ++ [draw p2] ++ (map draw enemies) ++ (map draw lvl)
+drawLevel (Level p1 p1o p2 p2o enemies lvl ani) 
+    = (map draw ani) ++ (map draw p1o) ++ (map draw p2o) ++ [draw p1] ++ [draw p2] ++ (map draw enemies) ++ (map draw lvl)
 
 -- Given an object to draw, will return the correct IO picture for that object
 class Draw a where 
