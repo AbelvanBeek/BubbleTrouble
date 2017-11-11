@@ -32,7 +32,7 @@ randomPlayLevel = let x1IO = randomRFloat (-550) 550
                          d1 <- d1IO
                          d2 <- d2IO
                          return $ Level 
-                             (Player(P1 (PlayerInfo (ObjectInfo red (0,0) (x1,-320) (Size 1 1)) 0 No 5)))
+                              (Player(P1 (PlayerInfo (ObjectInfo red (0,0) (x1,-320) (Size 1 1)) 0 No 5)))
                               [] 
                               (Player(P2 (PlayerInfo (ObjectInfo red (0,0) (x2,-320) (Size 1 1)) 0 No 5)))
                               [] 
