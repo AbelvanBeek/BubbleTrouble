@@ -17,7 +17,7 @@ instance Update GameObjects where
           = PlayerObjects  (Arrow          (updatePosition objectinfo))
     update (EnemyObjects   (Ball objectinfo)) 
           = EnemyObjects   (Ball           (updatePosition (adjustVelocity (0) (-0.05) objectinfo)))
-    update o@(LevelObjects (Wall                           objectinfo))
+    update (LevelObjects (Wall                           objectinfo))
           = LevelObjects   (Wall           (updatePosition objectinfo))
 
 updateLevel :: Level -> Level
