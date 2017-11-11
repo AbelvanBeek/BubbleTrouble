@@ -16,5 +16,5 @@ step secs gstat = do gstate@(GameState status lvl _) <- gstat
                      case status of
                         Play -> if checkGameOver lvl 
                                    then return $ return $ gstate { gameStatus = GameOver }
-                                   else return $ return $ gstate { level = updateLevel $ filterLevel lvl }
+                                   else return $ return $ gstate { level = updateLevel secs $ filterLevel lvl }
                         _    -> return gstat

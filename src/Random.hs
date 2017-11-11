@@ -39,3 +39,4 @@ randomPlayLevel = let x1IO = randomRFloat (-550) 550
                               [EnemyObjects(Ball (ObjectInfo red (if d1 then ballSpeed else -ballSpeed,0) (x3,y1) (Size 1 1))),
                                EnemyObjects(Ball (ObjectInfo red (if d2 then ballSpeed else -ballSpeed,0) (x4,y2) (Size 1 1)))] 
                               []
+                              []
