@@ -26,6 +26,7 @@ data Level = Level { p1         :: GameObjects
                    , enemies    :: [GameObjects]
                    , lvl        :: [GameObjects]
                    , animations :: [GameObjects]
+                   , pics       :: [IO Picture]
                    }
 
 type Score = Int
