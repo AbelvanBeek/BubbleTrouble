@@ -10,7 +10,6 @@ loadPictures = let x = [ handlePic (loadJuicyPNG path) | path <- filePaths]
                    handlePic xy= do pic <- xy
                                     return $ maybePicToPic pic
                 in x
-                     
 
 filePaths :: [FilePath]
 filePaths = [

@@ -28,6 +28,7 @@ instance Draw GameObjects where
   draw o@(PlayerObjects (Arrow          objectinfo))        = setSprite (getFilePath o) objectinfo
   draw o@(EnemyObjects  (Ball           objectinfo))        = setSprite (getFilePath o) objectinfo
   draw o@(LevelObjects  (Wall           objectinfo))        = setSprite (getFilePath o) objectinfo
+  draw o@(AnimationObjects (Animation   objectinfo img _))  = setSprite (getFilePath o) objectinfo
 
 getFilePath :: GameObjects -> IO Picture
 getFilePath o@(Player _) 
@@ -49,6 +50,8 @@ getFilePath o@(Player (P2 (PlayerInfo _ _ isShooting _)))
 getFilePath (PlayerObjects(Arrow _)) = loadPictures !! 3
 getFilePath (EnemyObjects(Ball _)) = loadPictures !! 4
 getFilePath (LevelObjects(Wall _)) = loadPictures !! 4
+getFilePath (AnimationObjects(Animation _ img _)) = do x <- loadJuicyPNG ("assets/explosion" ++ show img ++ ".png")
+                                                       return $ maybePicToPic x
 
 setSprite :: IO Picture -> ObjectInfo -> IO Picture
 setSprite picture (ObjectInfo c (vx,vy) (px,py) (Size w h)) = do pic <- picture

@@ -4,6 +4,7 @@ import Model
 import HelperFunctions
 import Data.List
 import Data.Maybe
+import Data.Fixed
 
 class Update a where 
     update :: a -> a
@@ -22,7 +23,12 @@ instance Update GameObjects where
 
 updateAnimation :: Float -> GameObjects -> GameObjects
 updateAnimation secs o@(AnimationObjects (Animation objectinfo img lifetime))
-          = o
+          | secs `mod'` 0.08 < 0.015 && lifetime /= 0 = AnimationObjects (Animation objectinfo (img + 1) (lifetime - 1))
+          | otherwise = o
+
+filterAnimation :: GameObjects -> Bool
+filterAnimation (AnimationObjects (Animation _ _ lifetime)) | lifetime == 0 = False
+                                                            | otherwise = True
 
 updateLevel :: Float -> Level -> Level
 updateLevel secs (Level p1 p1o p2 p2o enemies lvl ani) 
@@ -30,7 +36,7 @@ updateLevel secs (Level p1 p1o p2 p2o enemies lvl ani)
 
 filterLevel :: Level -> Level
 filterLevel (Level p1 p1o p2 p2o enemies lvl ani) 
-            = Level p1 (removeOutOfBounds p1o) p2 (removeOutOfBounds p2o) (filter checkNoRoofCollision enemies) lvl ani
+            = Level p1 (removeOutOfBounds p1o) p2 (removeOutOfBounds p2o) (filter checkNoRoofCollision enemies) lvl (filter filterAnimation ani)
 
 removeOutOfBounds :: [GameObjects] -> [GameObjects]
 removeOutOfBounds xs = filter checkInBounds xs
