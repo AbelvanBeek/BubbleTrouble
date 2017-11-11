@@ -75,12 +75,12 @@ inputKey (EventKey k Down _ _) gstate@(GameState status (Level p1 p1o p2 p2o ene
 inputKey (EventKey k Up _ _) gstate@(GameState Play (Level p1 p1o p2 p2o enemies lvl ani) _) = 
   case k of
     -- P1 movement left and right reverse
-    SpecialKey KeyLeft  -> return $ gstate { level = (Level (newVelocity   playerSpeed  0 p1) p1o p2 p2o enemies lvl ani) }
-    SpecialKey KeyRight -> return $ gstate { level = (Level (newVelocity (-playerSpeed) 0 p1) p1o p2 p2o enemies lvl ani) }
+    SpecialKey KeyLeft  -> return $ gstate { level = (Level (plusxIfNecessary  0  0 p1) p1o p2 p2o enemies lvl ani) }
+    SpecialKey KeyRight -> return $ gstate { level = (Level (minxIfNecessary (0) 0 p1) p1o p2 p2o enemies lvl ani) }
           
     -- P2 movement left and right reverse
-    Char 'a'            -> return $ gstate { level = (Level p1 p1o (newVelocity   playerSpeed  0 p2) p2o enemies lvl ani) }
-    Char 'd'            -> return $ gstate { level = (Level p1 p1o (newVelocity (-playerSpeed) 0 p2) p2o enemies lvl ani) }
+    Char 'a'            -> return $ gstate { level = (Level p1 p1o (plusxIfNecessary 0 0 p2) p2o enemies lvl ani) }
+    Char 'd'            -> return $ gstate { level = (Level p1 p1o (minxIfNecessary 0 0 p2) p2o enemies lvl ani) }
               
     -- Not recognized
     _                   -> return $ gstate
@@ -88,10 +88,15 @@ inputKey (EventKey k Up _ _) gstate@(GameState Play (Level p1 p1o p2 p2o enemies
 -- Handle other patterns than an EventKey
 inputKey _ gstate     = return $ gstate
 
-
-newVelocity :: Float -> Float -> GameObjects -> GameObjects
-newVelocity x y (Player (P1 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a)))  = (Player (P1 (PlayerInfo (ObjectInfo d ((vx+x),(vy+y)) o n) t c a)))
-newVelocity x y (Player (P2 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a)))  = (Player (P2 (PlayerInfo (ObjectInfo d ((vx+x),(vy+y)) o n) t c a)))
+plusxIfNecessary, minxIfNecessary :: Float -> Float -> GameObjects -> GameObjects
+plusxIfNecessary x y p@(Player (P1 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a))) | vx > 0 = p --if moving right, we dont do anything when the left key goes up
+                                                                                   | otherwise = (newVelocity x y p) --adjust the velocity
+plusxIfNecessary x y p@(Player (P2 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a))) | vx > 0 = p
+                                                                                   | otherwise = (newVelocity x y p)
+minxIfNecessary x y p@(Player (P1 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a)))  | vx < 0 = p --if moving left, we dont do anything when the right key goes up
+                                                                                   | otherwise = (newVelocity x y p) --adjust the velocity
+minxIfNecessary x y p@(Player (P2 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a)))  | vx < 0 = p
+                                                                                   | otherwise = (newVelocity x y p) 
 
 createArrow :: GameObjects -> [GameObjects] -> [GameObjects]
 createArrow player xs
