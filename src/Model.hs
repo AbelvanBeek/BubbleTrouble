@@ -25,6 +25,7 @@ data Level = Level { p1         :: GameObjects
                    , p2Objects  :: [GameObjects]
                    , enemies    :: [GameObjects]
                    , lvl        :: [GameObjects]
+                   , animations :: [GameObjects]
                    }
 
 type Score = Int
@@ -40,7 +41,10 @@ data Size = Size { w :: Float
                  , h :: Float }
 
 type Sprite = Picture
-newtype Animation = Animation { unAnimate :: [Sprite] }
+
+-- Animation data types
+type Img = Int
+type LifeTime = Int
 
 -- Game object related data types
 -- Union all gameobjects in one data type
@@ -48,21 +52,23 @@ data GameObjects = Player Player
                  | PlayerObjects PlayerObjects
                  | LevelObjects LevelObjects 
                  | EnemyObjects EnemyObjects
+                 | AnimationObjects AnimationObjects
 
 data ObjectInfo     = ObjectInfo { c    :: Color
                                  , vel  :: Velocity
                                  , pos  :: Position
                                  , size :: Size 
                                  }
-data PlayerObjects  = Arrow ObjectInfo
-data LevelObjects   = Wall ObjectInfo 
-data EnemyObjects   = Ball ObjectInfo 
+data PlayerObjects    = Arrow ObjectInfo
+data LevelObjects     = Wall ObjectInfo 
+data EnemyObjects     = Ball ObjectInfo 
+data AnimationObjects = Animation ObjectInfo Img LifeTime
 
 -- Player related data types
 data Player     = P1 PlayerInfo 
                 | P2 PlayerInfo
 data IsShooting = Yes 
-                | No
+                | No deriving (Eq)
 data PlayerInfo = PlayerInfo { objectinfo :: ObjectInfo
                              , score      :: Score
                              , shooting   :: IsShooting

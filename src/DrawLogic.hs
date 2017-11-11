@@ -2,7 +2,6 @@ module DrawLogic where
 
 import Graphics.Gloss
 import Graphics.Gloss.Juicy
-import System.Random
 
 import Model
 import HelperFunctions
@@ -10,8 +9,8 @@ import LoadPictures
 
 -- Given a level, all objects in that level will be drawn
 drawLevel :: Level -> [IO Picture]
-drawLevel (Level p1 p1o p2 p2o enemies lvl) 
-    = (map draw p1o) ++ (map draw p2o) ++ [draw p1] ++ [draw p2] ++ (map draw enemies) ++ (map draw lvl)
+drawLevel (Level p1 p1o p2 p2o enemies lvl ani) 
+    = (map draw ani) ++ (map draw p1o) ++ (map draw p2o) ++ [draw p1] ++ [draw p2] ++ (map draw enemies) ++ (map draw lvl)
 
 -- Given an object to draw, will return the correct IO picture for that object
 class Draw a where 
@@ -35,6 +34,18 @@ getFilePath o@(Player _)
   | (getX $ getVelocity o) < 0 = loadPictures !! 0
   | (getX $ getVelocity o) > 0 = loadPictures !! 1
   | otherwise                  = loadPictures !! 2
+  {-
+getFilePath o@(Player (P1 (PlayerInfo _ _ isShooting _)))
+  | isShooting == Yes          = loadPictures !! 4
+  | (getX $ getVelocity o) < 0 = loadPictures !! 0
+  | (getX $ getVelocity o) > 0 = loadPictures !! 1
+  | otherwise                  = loadPictures !! 2
+getFilePath o@(Player (P2 (PlayerInfo _ _ isShooting _)))
+  | isShooting == Yes          = loadPictures !! 4
+  | (getX $ getVelocity o) < 0 = loadPictures !! 0
+  | (getX $ getVelocity o) > 0 = loadPictures !! 1
+  | otherwise                  = loadPictures !! 2
+  -}
 getFilePath (PlayerObjects(Arrow _)) = loadPictures !! 3
 getFilePath (EnemyObjects(Ball _)) = loadPictures !! 4
 getFilePath (LevelObjects(Wall _)) = loadPictures !! 4

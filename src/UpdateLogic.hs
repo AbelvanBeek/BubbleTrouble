@@ -9,24 +9,28 @@ class Update a where
     update :: a -> a
   
 instance Update GameObjects where
-    update (Player         (P1 (PlayerInfo                 objectinfo  d o n)))
-          = Player         (P1 (PlayerInfo (updatePosition objectinfo) d o n))
-    update (Player         (P2 (PlayerInfo                 objectinfo  d o n)))
-          = Player         (P2 (PlayerInfo (updatePosition objectinfo) d o n))
-    update (PlayerObjects  (Arrow                          objectinfo))
-          = PlayerObjects  (Arrow          (updatePosition objectinfo))
-    update (EnemyObjects   (Ball objectinfo)) 
-          = EnemyObjects   (Ball           (updatePosition (adjustVelocity (0) (-0.05) objectinfo)))
-    update o@(LevelObjects (Wall                           objectinfo))
-          = LevelObjects   (Wall           (updatePosition objectinfo))
+    update (Player           (P1 (PlayerInfo                 objectinfo  d o n)))
+          = Player           (P1 (PlayerInfo (updatePosition objectinfo) d o n))
+    update (Player           (P2 (PlayerInfo                 objectinfo  d o n)))
+          = Player           (P2 (PlayerInfo (updatePosition objectinfo) d o n))
+    update (PlayerObjects    (Arrow                          objectinfo))
+          = PlayerObjects    (Arrow          (updatePosition objectinfo))
+    update (EnemyObjects     (Ball objectinfo)) 
+          = EnemyObjects     (Ball           (updatePosition (adjustVelocity (0) (-0.05) objectinfo)))
+    update (LevelObjects     (Wall                           objectinfo))
+          = LevelObjects     (Wall           (updatePosition objectinfo))
 
-updateLevel :: Level -> Level
-updateLevel (Level p1 p1o p2 p2o enemies lvl) 
-            = handleBallCollisions (Level (update p1) (map update p1o) (update p2) (map update p2o) (map update enemies) (map update lvl))
+updateAnimation :: Float -> GameObjects -> GameObjects
+updateAnimation secs o@(AnimationObjects (Animation objectinfo img lifetime))
+          = o
+
+updateLevel :: Float -> Level -> Level
+updateLevel secs (Level p1 p1o p2 p2o enemies lvl ani) 
+            = handleBallCollisions (Level (update p1) (map update p1o) (update p2) (map update p2o) (map update enemies) (map update lvl) (map (updateAnimation secs) ani))
 
 filterLevel :: Level -> Level
-filterLevel (Level p1 p1o p2 p2o enemies lvl) 
-            = Level p1 (removeOutOfBounds p1o) p2 (removeOutOfBounds p2o) (filter checkNoRoofCollision enemies) lvl
+filterLevel (Level p1 p1o p2 p2o enemies lvl ani) 
+            = Level p1 (removeOutOfBounds p1o) p2 (removeOutOfBounds p2o) (filter checkNoRoofCollision enemies) lvl ani
 
 removeOutOfBounds :: [GameObjects] -> [GameObjects]
 removeOutOfBounds xs = filter checkInBounds xs
@@ -50,7 +54,7 @@ checkNoRoofCollision (EnemyObjects (Ball (ObjectInfo _ (vx,vy) (x,y) (Size w h) 
                                                                                            where adjustsize = halfBallSprite * w * w
                                           
 handleBallCollisions ::  Level -> Level
-handleBallCollisions (Level p1 p1o p2 p2o enemies lvl) = (Level (updateScore p1score p1) (filterindices p1arrowindices p1o) (updateScore p2score p2) (filterindices p2arrowindices p2o) (splitballs balls enemies) lvl)
+handleBallCollisions (Level p1 p1o p2 p2o enemies lvl ani) = (Level (updateScore p1score p1) (filterindices p1arrowindices p1o) (updateScore p2score p2) (filterindices p2arrowindices p2o) (splitballs balls enemies) lvl ani)
       where p1indices = collisionindices 0 p1o enemies 
             p1arrowindices =  (sort (map fst p1indices)) --Indices of all p1Arrows that hit a ball
             p2indices = collisionindices 0 p2o enemies 
@@ -118,7 +122,7 @@ collision (Player (P2 (PlayerInfo (ObjectInfo _ (pvx,pvy) (px,py) _) _ _ _))) (E
                         ydistance = abs ((py + pvy) - (by + bvy))
 
 checkGameOver :: Level -> Bool
-checkGameOver (Level p1 p1o p2 p2o enemies lvl) = (checkPlayerCollision enemies p1) || (checkPlayerCollision enemies p2)
+checkGameOver (Level p1 p1o p2 p2o enemies lvl ani) = (checkPlayerCollision enemies p1) || (checkPlayerCollision enemies p2)
 
 checkPlayerCollision :: [GameObjects] -> GameObjects -> Bool
 checkPlayerCollision balls player = elem True (map (collision player) balls)

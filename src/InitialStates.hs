@@ -1,26 +1,13 @@
 module InitialStates where
     
-import Graphics.Gloss
-
 import Model
-import HelperFunctions
+import Random
+
 {- Initialize States -}
 
-initialMenu :: GameState
-initialMenu = GameState Menu (Level 
-                                (Player(P1 (PlayerInfo (ObjectInfo red (0,0) (0,-320) (Size 1 1)) 0 No 5)))
-                                [] 
-                                (Player(P2 (PlayerInfo (ObjectInfo red (0,0) (0,-320) (Size 1 1)) 0 No 5)))
-                                [] 
-                                [] 
-                                []) 0
+initialMenu :: IO GameState
+initialMenu = return $ GameState Menu (Level undefined undefined undefined undefined undefined undefined undefined) undefined
 
-initialPlay :: GameState
-initialPlay = GameState Play (Level 
-                                (Player(P1 (PlayerInfo (ObjectInfo red (0,0) (0,-320) (Size 1 1)) 0 No 5)))
-                                [] 
-                                (Player(P2 (PlayerInfo (ObjectInfo red (0,0) (0,-320) (Size 1 1)) 0 No 5)))
-                                [] 
-                                [EnemyObjects(Ball (ObjectInfo red (ballSpeed,0) (0,0) (Size 1 1))),
-                                EnemyObjects(Ball (ObjectInfo red (ballSpeed,0) (200,0) (Size 1 1)))] 
-                                []) 0
+initialPlay :: IO GameState
+initialPlay = do rndlvl <- randomPlayLevel
+                 return $ GameState Play rndlvl 0
