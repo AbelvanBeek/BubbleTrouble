@@ -39,15 +39,6 @@ checkInBounds :: GameObjects -> Bool
 checkInBounds o@(PlayerObjects _) = (getY (getPosition o) < -720)
 checkInBounds obj = (getY (getPosition obj) < -720)
 
-checkSideCollision, checkFloorCollision :: ObjectInfo -> Bool
-checkSideCollision (ObjectInfo _ (vx,vy) (px, py) (Size w h))     | (px + vx) < ((-640) + adjustsize) = True --50 is half the width of the sprite 
-                                                                  | (px + vx) > (640 - adjustsize) = True
-                                                                  | otherwise = False
-                                                                        where adjustsize = halfBallSprite * w * w
-checkFloorCollision (ObjectInfo _ (vx,vy) (px, py) (Size w h))    | (py + vy) < (-360 + adjustsize) = True
-                                                                  | otherwise = False
-                                                                        where adjustsize = halfBallSprite * w * w
-
 checkNoRoofCollision :: GameObjects -> Bool
 checkNoRoofCollision (EnemyObjects (Ball (ObjectInfo _ (vx,vy) (x,y) (Size w h) ))) | ((vy + y) > (350 - adjustsize)) = False
                                                                                     | otherwise = True
@@ -107,14 +98,14 @@ collision (PlayerObjects (Arrow (ObjectInfo _ (avx,avy) (ax, ay) _))) (EnemyObje
             | otherwise = False
                   where adjustsize = halfBallSprite * w
 collision (Player (P1 (PlayerInfo (ObjectInfo _ (pvx,pvy) (px,py) _) _ _ _))) (EnemyObjects (Ball (ObjectInfo _ (bvx,bvy) (bx, by) (Size w h))))
-            | (sqrt ((xdistance*xdistance) + (ydistance * ydistance) ) < halfPlayerSprite + adjustsize) = True
+            | (sqrt ((xdistance*xdistance) + (ydistance * ydistance) ) < halfPlayerSprite + adjustsize) = False
             | otherwise = False
             -- needs to be changed with player sprite
                   where adjustsize = halfBallSprite * w
                         xdistance = abs ((px + pvx) - (bx + bvx))
                         ydistance = abs ((py + pvy) - (by + bvy))
 collision (Player (P2 (PlayerInfo (ObjectInfo _ (pvx,pvy) (px,py) _) _ _ _))) (EnemyObjects (Ball (ObjectInfo _ (bvx,bvy) (bx, by) (Size w h))))
-            | (sqrt ((xdistance*xdistance) + (ydistance * ydistance) ) < halfPlayerSprite + adjustsize) = True
+            | (sqrt ((xdistance*xdistance) + (ydistance * ydistance) ) < halfPlayerSprite + adjustsize) = False
             | otherwise = False
             --50 needs to be changed with player sprite
                   where adjustsize = halfBallSprite * w
@@ -128,11 +119,10 @@ checkPlayerCollision :: [GameObjects] -> GameObjects -> Bool
 checkPlayerCollision balls player = elem True (map (collision player) balls)
 
 updatePosition :: ObjectInfo -> ObjectInfo
-updatePosition (ObjectInfo clr (vx,vy) (px,py) size) =  (ObjectInfo clr (vx,vy) ((px+vx),(py+vy)) size)
+updatePosition x@(ObjectInfo clr (vx,vy) (px,py) size) | checkSideCollision x = (ObjectInfo clr (0,vy) ((px),(py)) size)
+                                                       | otherwise = (ObjectInfo clr (vx,vy) ((px+vx),(py+vy)) size)
 
-newVelocity :: Float -> Float -> GameObjects -> GameObjects
-newVelocity x y (Player (P1 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a)))  = (Player (P1 (PlayerInfo (ObjectInfo d ((vx+x),(vy+y)) o n) t c a)))
-newVelocity x y (Player (P2 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a)))  = (Player (P2 (PlayerInfo (ObjectInfo d ((vx+x),(vy+y)) o n) t c a)))
+
 
 adjustVelocity :: Float -> Float -> ObjectInfo -> ObjectInfo
 adjustVelocity x y obj@(ObjectInfo clr (vx,vy) pos size@(Size w h)) | (checkSideCollision obj) && (checkFloorCollision obj) = (ObjectInfo clr ((-(vx + x)),(ballHitY * (sqrt (3 * w)))) pos size)
