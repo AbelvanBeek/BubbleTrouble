@@ -2,7 +2,6 @@ module DrawLogic where
 
 import Graphics.Gloss
 import Graphics.Gloss.Juicy
-import System.Random
 
 import Model
 import HelperFunctions
@@ -35,6 +34,18 @@ getFilePath o@(Player _)
   | (getX $ getVelocity o) < 0 = loadPictures !! 0
   | (getX $ getVelocity o) > 0 = loadPictures !! 1
   | otherwise                  = loadPictures !! 2
+  {-
+getFilePath o@(Player (P1 (PlayerInfo _ _ isShooting _)))
+  | isShooting == Yes          = loadPictures !! 4
+  | (getX $ getVelocity o) < 0 = loadPictures !! 0
+  | (getX $ getVelocity o) > 0 = loadPictures !! 1
+  | otherwise                  = loadPictures !! 2
+getFilePath o@(Player (P2 (PlayerInfo _ _ isShooting _)))
+  | isShooting == Yes          = loadPictures !! 4
+  | (getX $ getVelocity o) < 0 = loadPictures !! 0
+  | (getX $ getVelocity o) > 0 = loadPictures !! 1
+  | otherwise                  = loadPictures !! 2
+  -}
 getFilePath (PlayerObjects(Arrow _)) = loadPictures !! 3
 getFilePath (EnemyObjects(Ball _)) = loadPictures !! 4
 getFilePath (LevelObjects(Wall _)) = loadPictures !! 4

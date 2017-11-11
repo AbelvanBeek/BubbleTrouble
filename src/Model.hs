@@ -62,7 +62,7 @@ data EnemyObjects   = Ball ObjectInfo
 data Player     = P1 PlayerInfo 
                 | P2 PlayerInfo
 data IsShooting = Yes 
-                | No
+                | No deriving (Eq)
 data PlayerInfo = PlayerInfo { objectinfo :: ObjectInfo
                              , score      :: Score
                              , shooting   :: IsShooting
