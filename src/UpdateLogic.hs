@@ -5,6 +5,7 @@ import HelperFunctions
 import Data.List
 import Data.Maybe
 import Data.Fixed
+import Graphics.Gloss
 
 class Update a where 
     update :: a -> a
@@ -51,7 +52,7 @@ checkNoRoofCollision (EnemyObjects (Ball (ObjectInfo _ (vx,vy) (x,y) (Size w h) 
                                                                                            where adjustsize = halfBallSprite * w * w
                                           
 handleBallCollisions ::  Level -> Level
-handleBallCollisions (Level p1 p1o p2 p2o enemies lvl ani) = (Level (updateScore p1score p1) (filterindices p1arrowindices p1o) (updateScore p2score p2) (filterindices p2arrowindices p2o) (splitballs balls enemies) lvl ani)
+handleBallCollisions (Level p1 p1o p2 p2o enemies lvl ani) = (Level (updateScore p1score p1) (filterindices p1arrowindices p1o) (updateScore p2score p2) (filterindices p2arrowindices p2o) (splitballs balls enemies) lvl (ani ++ createExplosions hitballs))
       where p1indices = collisionindices 0 p1o enemies 
             p1arrowindices =  (sort (map fst p1indices)) --Indices of all p1Arrows that hit a ball
             p2indices = collisionindices 0 p2o enemies 
@@ -59,7 +60,12 @@ handleBallCollisions (Level p1 p1o p2 p2o enemies lvl ani) = (Level (updateScore
             balls = nub (sort ((map snd p1indices) ++ (map snd p2indices)))
             p1score = (length p1indices) * 500
             p2score = (length p2indices) * 500
+            hitballs = map (enemies !!) balls
 
+createExplosions :: [GameObjects] -> [GameObjects] --List of enemies to list of Animations
+createExplosions balls = map explosion ballpositions
+                        where ballpositions = map getPosition balls
+                              explosion (x,y) = AnimationObjects(Animation (ObjectInfo red (0,0) (x,y) (Size 1 1)) 1 9)
 updateScore :: Int -> GameObjects -> GameObjects
 updateScore n (Player (P1 (PlayerInfo a score b c))) = (Player (P1 (PlayerInfo a (score + n) b c)))
 updateScore n (Player (P2 (PlayerInfo a score b c))) = (Player (P2 (PlayerInfo a (score + n) b c)))
@@ -104,7 +110,7 @@ collision (PlayerObjects (Arrow (ObjectInfo _ (avx,avy) (ax, ay) _))) (EnemyObje
             | otherwise = False
                   where adjustsize = halfBallSprite * w
 collision (Player (P1 (PlayerInfo (ObjectInfo _ (pvx,pvy) (px,py) _) _ _ _))) (EnemyObjects (Ball (ObjectInfo _ (bvx,bvy) (bx, by) (Size w h))))
-            | (sqrt ((xdistance*xdistance) + (ydistance * ydistance) ) < halfPlayerSprite + adjustsize) = False
+            | (sqrt ((xdistance*xdistance) + (ydistance * ydistance) ) < halfPlayerSprite + adjustsize) = True
             | otherwise = False
             -- needs to be changed with player sprite
                   where adjustsize = halfBallSprite * w
