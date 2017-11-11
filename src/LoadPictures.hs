@@ -13,13 +13,16 @@ loadPictures = let x = [ handlePic (loadJuicyPNG path) | path <- filePaths]
 
 filePaths :: [FilePath]
 filePaths = [
-              "assets/P1Left.png"
+              "assets/P1Left.png" -- 0
             , "assets/P1Idle.png"
             , "assets/P1Right.png"
-            , "assets/Arrow.png"
-            , "assets/Ball.png"
-            , "assets/bg.png"
-            , "assets/explosion1.png"
+            , "assets/P1Left.png" -- 3
+            , "assets/P1Idle.png"
+            , "assets/P1Right.png"
+            , "assets/Arrow.png" -- 6
+            , "assets/Ball.png" -- 7
+            , "assets/bg.png" -- 8
+            , "assets/explosion1.png" -- 9
             , "assets/explosion2.png"
             , "assets/explosion3.png"
             , "assets/explosion4.png"
@@ -28,5 +31,5 @@ filePaths = [
             , "assets/explosion7.png"
             , "assets/explosion8.png"
             , "assets/explosion9.png"
-            , "assets/explosion10.png"
+            , "assets/explosion10.png" -- 18
             ]

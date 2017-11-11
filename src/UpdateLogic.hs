@@ -65,7 +65,7 @@ handleBallCollisions (Level p1 p1o p2 p2o enemies lvl ani pics) = (Level (update
 createExplosions :: [GameObjects] -> [GameObjects] --List of enemies to list of Animations
 createExplosions balls = map explosion ballpositions
                         where ballpositions = map getPosition balls
-                              explosion (x,y) = AnimationObjects(Animation (ObjectInfo red (0,0) (x,y) (Size 1 1)) 6 9)
+                              explosion (x,y) = AnimationObjects(Animation (ObjectInfo red (0,0) (x,y) (Size 1 1)) 9 9)
 
 updateScore :: Int -> GameObjects -> GameObjects
 updateScore n (Player (P1 (PlayerInfo a score b c))) = (Player (P1 (PlayerInfo a (score + n) b c)))

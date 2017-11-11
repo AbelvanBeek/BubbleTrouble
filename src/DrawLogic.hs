@@ -31,13 +31,17 @@ instance Draw GameObjects where
   draw pic o@(AnimationObjects (Animation   objectinfo img _))  = setSprite (getFilePath o pic) objectinfo
 
 getFilePath :: GameObjects -> [IO Picture] -> IO Picture
-getFilePath o@(Player _) pics
+getFilePath o@(Player (P1 _)) pics
   | (getX $ getVelocity o) < 0 = pics !! 0
   | (getX $ getVelocity o) > 0 = pics !! 1
   | otherwise                  = pics !! 2
-getFilePath (PlayerObjects(Arrow _)) pics = pics !! 3
-getFilePath (EnemyObjects(Ball _)) pics = pics !! 4
-getFilePath (LevelObjects(Wall _)) pics = pics !! 5
+getFilePath o@(Player (P2 _)) pics
+  | (getX $ getVelocity o) < 0 = pics !! 0
+  | (getX $ getVelocity o) > 0 = pics !! 1
+  | otherwise                  = pics !! 2
+getFilePath (PlayerObjects(Arrow _)) pics = pics !! 6
+getFilePath (EnemyObjects(Ball _)) pics = pics !! 7
+getFilePath (LevelObjects(Wall _)) pics = pics !! 8
 getFilePath (AnimationObjects(Animation _ img _)) pics = pics !! img
 
 setSprite :: IO Picture -> ObjectInfo -> IO Picture
