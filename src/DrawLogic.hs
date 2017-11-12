@@ -17,14 +17,18 @@ class Draw a where
   draw :: [IO Picture] -> a -> IO Picture
 
 instance Draw GameObjects where
-  draw pic o@(Player        (P1 (PlayerInfo objectinfo score _ _))) = let x = translate (-600) 300 $ scale 0.2 0.2 $ color red $ text (y ++ show score) 
-                                                                          y = "Player 1: " in 
-                                                                      do sprite <- setSprite (getFilePath o pic) objectinfo
-                                                                         return $ pictures [sprite, x]
-  draw pic o@(Player        (P2 (PlayerInfo objectinfo score _ _))) = let x = translate 400 300 $ scale 0.2 0.2 $ color blue $ text (y ++ show score)
-                                                                          y = "Player 2: " in 
-                                                                      do sprite <- setSprite (getFilePath o pic) objectinfo
-                                                                         return $ pictures [sprite, x]
+  draw pic o@(Player        (P1 (PlayerInfo objectinfo score _ l))) = let x = translate (-600) 300 $ scale 0.2 0.2 $ color red $ text (y ++ show score ++ "   " ++ z ++ show l) 
+                                                                          y = "Player 1: " 
+                                                                          z = "Lifes: " in 
+                                                                      if (l /= 0) then do sprite <- setSprite (getFilePath o pic) objectinfo
+                                                                                          return $ pictures [sprite, x]
+                                                                                  else return x
+  draw pic o@(Player        (P2 (PlayerInfo objectinfo score _ l))) = let x = translate 200 300 $ scale 0.2 0.2 $ color blue $ text (y ++ show score ++ "   " ++ z ++ show l)
+                                                                          y = "Player 2: " 
+                                                                          z = "Lifes: " in 
+                                                                      if (l /= 0) then do sprite <- setSprite (getFilePath o pic) objectinfo
+                                                                                          return $ pictures [sprite, x]
+                                                                                  else return x
   draw pic o@(PlayerObjects (Arrow          objectinfo))        = setSprite (getFilePath o pic) objectinfo
   draw pic o@(EnemyObjects  (Ball           objectinfo))        = setSprite (getFilePath o pic) objectinfo
   draw pic o@(LevelObjects  (Wall           objectinfo))        = setSprite (getFilePath o pic) objectinfo
@@ -46,4 +50,4 @@ getFilePath (AnimationObjects(Animation _ img _)) pics = pics !! img
 
 setSprite :: IO Picture -> ObjectInfo -> IO Picture
 setSprite picture (ObjectInfo c (vx,vy) (px,py) (Size w h)) = do pic <- picture
-                                                                 return $ color c $ translate px py $ scale w h pic
+                                                                 return $ translate px py $ scale w h pic
