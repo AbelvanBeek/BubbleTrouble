@@ -50,5 +50,5 @@ getSprite (LevelObjects(Wall _)) pics = pics !! 8
 getSprite (AnimationObjects(Animation _ img _)) pics = pics !! img
 
 setSprite :: IO Picture -> ObjectInfo -> IO Picture
-setSprite picture (ObjectInfo c (vx,vy) (px,py) (Size w h)) = do pic <- picture
-                                                                 return $ translate px py $ scale w h pic
+setSprite picture (ObjectInfo _ _ (px,py) (Size w h)) = do pic <- picture
+                                                           return $ translate px py $ scale w h pic

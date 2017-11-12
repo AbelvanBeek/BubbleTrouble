@@ -41,8 +41,8 @@ maybePicToPic (Just x) = x
 getPosition, getVelocity :: GameObjects -> Point
 getPosition (Player (P1 (PlayerInfo objectinfo _ _ _))) = getPos objectinfo
 getPosition (Player (P2 (PlayerInfo objectinfo _ _ _))) = getPos objectinfo
-getPosition (PlayerObjects (Arrow objectinfo)) = getPos objectinfo
-getPosition (EnemyObjects (Ball objectinfo)) = getPos objectinfo
+getPosition (PlayerObjects (Arrow objectinfo))          = getPos objectinfo
+getPosition (EnemyObjects (Ball objectinfo))            = getPos objectinfo
 getVelocity (Player (P1 (PlayerInfo objectinfo _ _ _))) = getVel objectinfo
 getVelocity (Player (P2 (PlayerInfo objectinfo _ _ _))) = getVel objectinfo
 

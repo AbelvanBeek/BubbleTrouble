@@ -92,14 +92,14 @@ inputKey _ gstate     = return $ gstate
 --if however the player already pressed the right key when the left key was still down, we don't want the player
 --to stand still after the left key goes up when the right key is still down. This functions is used to realise that.
 plusxIfNecessary, minxIfNecessary :: Float -> Float -> GameObjects -> GameObjects
-plusxIfNecessary x y p@(Player (P1 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a))) | vx > 0 = p --if moving right, we dont do anything when the left key goes up
-                                                                                   | otherwise = (newVelocity x y p) --adjust the velocity
-plusxIfNecessary x y p@(Player (P2 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a))) | vx > 0 = p
-                                                                                   | otherwise = (newVelocity x y p)
-minxIfNecessary x y p@(Player (P1 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a)))  | vx < 0 = p --if moving left, we dont do anything when the right key goes up
-                                                                                   | otherwise = (newVelocity x y p) --adjust the velocity
-minxIfNecessary x y p@(Player (P2 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a)))  | vx < 0 = p
-                                                                                   | otherwise = (newVelocity x y p) 
+plusxIfNecessary x y p@(Player (P1 (PlayerInfo (ObjectInfo _ (vx,_) _ _) _ _ _))) | vx > 0 = p --if moving right, we dont do anything when the left key goes up
+                                                                                  | otherwise = (newVelocity x y p) --adjust the velocity
+plusxIfNecessary x y p@(Player (P2 (PlayerInfo (ObjectInfo _ (vx,_) _ _) _ _ _))) | vx > 0 = p
+                                                                                  | otherwise = (newVelocity x y p)
+minxIfNecessary x y p@(Player (P1 (PlayerInfo (ObjectInfo _ (vx,_) _ _) _ _ _)))  | vx < 0 = p --if moving left, we dont do anything when the right key goes up
+                                                                                  | otherwise = (newVelocity x y p) --adjust the velocity
+minxIfNecessary x y p@(Player (P2 (PlayerInfo (ObjectInfo _ (vx,_) o n) _ _ _)))  | vx < 0 = p
+                                                                                  | otherwise = (newVelocity x y p) 
 
 
 
