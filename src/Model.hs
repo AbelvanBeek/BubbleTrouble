@@ -39,7 +39,7 @@ type Position = Point
 type Velocity = Vector
 
 data Size = Size { w :: Float
-                 , h :: Float }
+                 , h :: Float } deriving (Eq)
 
 type Sprite = Picture
 
@@ -53,17 +53,17 @@ data GameObjects = Player Player
                  | PlayerObjects PlayerObjects
                  | LevelObjects LevelObjects 
                  | EnemyObjects EnemyObjects
-                 | AnimationObjects AnimationObjects
+                 | AnimationObjects AnimationObjects deriving (Eq)
 
 data ObjectInfo     = ObjectInfo { c    :: Color
                                  , vel  :: Velocity
                                  , pos  :: Position
                                  , size :: Size 
-                                 }
-data PlayerObjects    = Arrow ObjectInfo
-data LevelObjects     = Wall ObjectInfo 
-data EnemyObjects     = Ball ObjectInfo 
-data AnimationObjects = Animation ObjectInfo Img LifeTime
+                                 } deriving (Eq)
+data PlayerObjects    = Arrow ObjectInfo deriving (Eq)
+data LevelObjects     = Wall ObjectInfo deriving (Eq)
+data EnemyObjects     = Ball ObjectInfo deriving (Eq)
+data AnimationObjects = Animation ObjectInfo Img LifeTime deriving (Eq)
 
 -- Player related data types
 data Player     = P1 PlayerInfo 
@@ -74,4 +74,9 @@ data PlayerInfo = PlayerInfo { objectinfo :: ObjectInfo
                              , score      :: Score
                              , shooting   :: IsShooting
                              , lives      :: Lives 
-                             }
+                             } deriving (Eq)
+
+instance Eq Player where
+    (P1 _) == (P1 _) = True
+    (P2 _) == (P2 _) = True
+    _ == _ = False

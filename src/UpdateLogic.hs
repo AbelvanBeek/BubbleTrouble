@@ -11,10 +11,12 @@ class Update a where
     update :: a -> a
   
 instance Update GameObjects where
-    update (Player           (P1 (PlayerInfo                 objectinfo  d o n)))
-          = Player           (P1 (PlayerInfo (updatePosition objectinfo) d o n))
-    update (Player           (P2 (PlayerInfo                 objectinfo  d o n)))
-          = Player           (P2 (PlayerInfo (updatePosition objectinfo) d o n))
+    update (Player           (P1 (PlayerInfo                 objectinfo  d o lifes)))
+          | lifes <= 0 = Player          (P1 (PlayerInfo                 objectinfo {pos = (-1000,0)}  d o lifes))
+          | otherwise = Player           (P1 (PlayerInfo (updatePosition objectinfo) d o lifes))
+    update (Player           (P2 (PlayerInfo                 objectinfo  d o lifes)))
+          | lifes <= 0 = Player          (P2 (PlayerInfo                 objectinfo {pos = (-1000,0)}  d o lifes))
+          | otherwise = Player           (P2 (PlayerInfo (updatePosition objectinfo) d o lifes))
     update (PlayerObjects    (Arrow                          objectinfo))
           = PlayerObjects    (Arrow          (updatePosition objectinfo))
     update (EnemyObjects     (Ball objectinfo)) 
@@ -126,7 +128,17 @@ collision (Player (P2 (PlayerInfo (ObjectInfo _ (pvx,pvy) (px,py) _) _ _ _))) (E
                         ydistance = abs ((py + pvy) - (by + bvy))
 
 checkGameOver :: Level -> Bool
-checkGameOver (Level p1 p1o p2 p2o enemies lvl ani pics) = (checkPlayerCollision enemies p1) || (checkPlayerCollision enemies p2)
+checkGameOver (Level (Player (P1 (PlayerInfo _ _ _ p1life))) p1o (Player (P2 (PlayerInfo _ _ _ p2life))) p2o enemies lvl ani pics) 
+      | (p1life <= 0) && (p2life <= 0) = True
+      | otherwise = False
+
+checkCollided :: Level -> Maybe GameObjects
+checkCollided (Level p1@(Player (P1 (PlayerInfo d1 o1 n1 p1life))) p1o p2@(Player (P2 (PlayerInfo d2 o2 n2 p2life))) p2o enemies lvl ani pics)
+      | p1hit = Just (Player (P1 (PlayerInfo d1 o1 n1 (max (p1life -1) 0 ))))
+      | p2hit = Just (Player (P2 (PlayerInfo d2 o2 n2 (max (p2life -1) 0 ))))
+      | otherwise = Nothing
+      where p1hit = checkPlayerCollision enemies p1
+            p2hit = checkPlayerCollision enemies p2
 
 checkPlayerCollision :: [GameObjects] -> GameObjects -> Bool
 checkPlayerCollision balls player = elem True (map (collision player) balls)
