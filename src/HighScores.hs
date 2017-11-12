@@ -6,8 +6,8 @@ import System.IO.Strict as S
 readHighScores :: IO [HighScore]
 readHighScores = do x <- highscores
                     return $ zip (listOfNames x) (map read (listOfScores x))                 
-    where highscores = S.readFile "assets/highscores.txt"
-          listOfNames x = words $ (lines x) !! 0
+    where highscores     = S.readFile "assets/highscores.txt"
+          listOfNames x  = words $ (lines x) !! 0
           listOfScores x = words $ (lines x) !! 1
 
 writeHighScores :: IO [HighScore] -> IO()
@@ -28,4 +28,4 @@ topHighScore current new = do cur <- current
 
 compareScore :: HighScore -> HighScore -> HighScore
 compareScore s1 s2 | snd s1 >= snd s2 = s1
-                   | otherwise = s2
+                   | otherwise        = s2
