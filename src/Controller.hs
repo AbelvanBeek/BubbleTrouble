@@ -16,9 +16,9 @@ import Data.Maybe
 
 -- | Handle one iteration of the game
 step :: Float -> IO GameState -> IO (IO GameState)
-step secs gstat = do gstate@(GameState status lvl@(Level p1 p1o p2 p2o enemies lvls ani pics) _) <- gstat
+step secs gstat = do gstate@(GameState status lvl@(Level p1 _ p2 _ enemies _ ani _) _) <- gstat
                      case status of
-                        Play    | enemies == [] 
+                        Play    | enemies == [] && ani == [] 
                                     -> return $ initialPlayWPlayer p1 p2
 
                                 | isNothing (checkPlayerCollided lvl) 
