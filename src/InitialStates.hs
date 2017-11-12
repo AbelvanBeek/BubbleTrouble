@@ -13,7 +13,7 @@ initialMenu = return $ GameState Menu (Level undefined undefined undefined undef
 
 --generates a random level (Meaning only random ball positions)
 initialPlay :: IO GameState
-initialPlay = do rndlvl <- randomPlayLevel (Player(P1 (PlayerInfo (ObjectInfo red (0,0) (0,-320) (Size 1 1)) 0 No 5))) (Player(P2 (PlayerInfo (ObjectInfo red (0,0) (0,-320) (Size 1 1)) 0 No 5)))
+initialPlay = do rndlvl <- randomPlayLevel (Player(P1 (PlayerInfo (ObjectInfo red (0,0) (0,-320) (Size 1 1)) 0 No 3))) (Player(P2 (PlayerInfo (ObjectInfo red (0,0) (0,-320) (Size 1 1)) 0 No 3)))
                  return $ GameState Play rndlvl 0
 
 initialPlayWPlayer :: GameObjects -> GameObjects -> IO GameState
