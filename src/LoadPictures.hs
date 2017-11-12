@@ -22,14 +22,14 @@ filePaths = [
             , "assets/Arrow.png" -- 6
             , "assets/Ball.png" -- 7
             , "assets/bg.png" -- 8
-            , "assets/fire/explosion1.png" -- 9
-            , "assets/fire/explosion2.png"
-            , "assets/fire/explosion3.png"
-            , "assets/fire/explosion4.png"
-            , "assets/fire/explosion5.png"
-            , "assets/fire/explosion6.png"
-            , "assets/fire/explosion7.png"
-            , "assets/fire/explosion8.png"
-            , "assets/fire/explosion9.png"
-            , "assets/fire/explosion10.png" -- 18
+            , "assets/explosion1.png" -- 9
+            , "assets/explosion2.png"
+            , "assets/explosion3.png"
+            , "assets/explosion4.png"
+            , "assets/explosion5.png"
+            , "assets/explosion6.png"
+            , "assets/explosion7.png"
+            , "assets/explosion8.png"
+            , "assets/explosion9.png"
+            , "assets/explosion10.png" -- 18
             ]
