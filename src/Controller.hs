@@ -18,15 +18,22 @@ import Data.Maybe
 step :: Float -> IO GameState -> IO (IO GameState)
 step secs gstat = do gstate@(GameState status lvl@(Level p1 p1o p2 p2o enemies lvls ani pics) _) <- gstat
                      case status of
-                        Play    | enemies == [] -> return $ initialPlayWPlayer p1 p2
-                                | isNothing (checkPlayerCollided lvl) -> if checkGameOver lvl
-                                                                      then return $ return $ gstate { gameStatus = GameOver }
-                                                                      else return $ return $ gstate { elapsedTime = elapsedTime gstate + secs, level = updateLevel (elapsedTime gstate) $ filterLevel lvl }
-                                | checkPlayerCollided lvl == Just (Player (P1 undefined)) -> if checkGameOver lvl 
-                                                                                                     then return $ return $ gstate { gameStatus = GameOver }
-                                                                                                     else return $ initialPlayWPlayer (fromJust (checkPlayerCollided lvl)) p2
-                                | otherwise -> if checkGameOver lvl
-                                                  then return $ return $ gstate { gameStatus = GameOver }
-                                                  else return $ initialPlayWPlayer p1 (fromJust (checkPlayerCollided lvl))
+                        Play    | enemies == [] 
+                                    -> return $ initialPlayWPlayer p1 p2
 
-                        _    -> return $ return gstate { elapsedTime = elapsedTime gstate + secs }
+                                | isNothing (checkPlayerCollided lvl) 
+                                    -> if checkGameOver lvl
+                                          then return $ return $ gstate { gameStatus = GameOver }
+                                          else return $ return $ gstate { elapsedTime = elapsedTime gstate + secs, level = updateLevel (elapsedTime gstate) $ filterLevel lvl }
+
+                                | checkPlayerCollided lvl == Just (Player (P1 undefined)) 
+                                    -> if checkGameOver lvl 
+                                          then return $ return $ gstate { gameStatus = GameOver }
+                                          else return $ initialPlayWPlayer (fromJust (checkPlayerCollided lvl)) p2
+
+                                | otherwise 
+                                    -> if checkGameOver lvl
+                                          then return $ return $ gstate { gameStatus = GameOver }
+                                          else return $ initialPlayWPlayer p1 (fromJust (checkPlayerCollided lvl))
+
+                        _       -> return $ return gstate { elapsedTime = elapsedTime gstate + secs }
