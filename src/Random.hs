@@ -44,9 +44,9 @@ randomPlayLevel (Player(P1 (PlayerInfo (ObjectInfo w1 o1 (n1,t1) c1) a1 r1 e1)))
                                     []
                                     loadPictures
 randomPlayLevel _ _ = return $ Level 
-                                    (Player(P1 (PlayerInfo (ObjectInfo red (0,0) (0,-320) (Size 1 1)) 0 No 5)))
+                                    (Player(P1 (PlayerInfo (ObjectInfo red (0,0) (0,-320) (Size 2 2)) 0 No 5)))
                                     [] 
-                                    (Player(P2 (PlayerInfo (ObjectInfo blue (0,0) (0,-320) (Size 1 1)) 0 No 5)))
+                                    (Player(P2 (PlayerInfo (ObjectInfo blue (0,0) (0,-320) (Size 2 2)) 0 No 5)))
                                     [] 
                                     [EnemyObjects(Ball (ObjectInfo red (-ballSpeed,0) (200,150) (Size 1 1))),
                                     EnemyObjects(Ball (ObjectInfo red (ballSpeed,0) (-200,200) (Size 1 1)))] 
