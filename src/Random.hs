@@ -33,9 +33,9 @@ randomPlayLevel = let x1IO = randomRFloat (-550) 550
                          d1 <- d1IO
                          d2 <- d2IO
                          return $ Level 
-                              (Player(P1 (PlayerInfo (ObjectInfo red (0,0) (x1,-320) (Size 1 1)) 0 No 5)))
+                              (Player(P1 (PlayerInfo (ObjectInfo red (0,0) (x1,-320) (Size 2 2)) 0 No 5)))
                               [] 
-                              (Player(P2 (PlayerInfo (ObjectInfo red (0,0) (x2,-320) (Size 1 1)) 0 No 5)))
+                              (Player(P2 (PlayerInfo (ObjectInfo red (0,0) (x2,-320) (Size 2 2)) 0 No 5)))
                               [] 
                               [EnemyObjects(Ball (ObjectInfo red (if d1 then ballSpeed else -ballSpeed,0) (x3,y1) (Size 1 1))),
                                EnemyObjects(Ball (ObjectInfo red (if d2 then ballSpeed else -ballSpeed,0) (x4,y2) (Size 1 1)))] 
