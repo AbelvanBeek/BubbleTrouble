@@ -39,8 +39,8 @@ randomPlayLevel (Player(P1 (PlayerInfo (ObjectInfo w1 o1 (n1,t1) c1) a1 r1 e1)))
                                     [] 
                                     (Player(P2 (PlayerInfo (ObjectInfo w2 o2 (x2,t2) c2) a2 r2 e2)))
                                     [] 
-                                    [EnemyObjects(Ball (ObjectInfo red (if d1 then ballSpeed else -ballSpeed,0) (x3,y1) (Size 1 1))),
-                                    EnemyObjects(Ball (ObjectInfo red (if d2 then ballSpeed else -ballSpeed,0) (x4,y2) (Size 1 1)))] 
+                                    [EnemyObjects(Ball (ObjectInfo red (if d1 then ballSpeed else -ballSpeed,0) (x3,y1) (Size 2.5 2.5))),
+                                    EnemyObjects(Ball (ObjectInfo red (if d2 then ballSpeed else -ballSpeed,0) (x4,y2) (Size 2.5 2.5)))] 
                                     [LevelObjects (Wall (ObjectInfo red (0,0) (0,0) (Size 4.5 4.5)))]
                                     []
                                     loadPictures

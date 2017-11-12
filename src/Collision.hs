@@ -9,7 +9,7 @@ checkNoRoofCollision :: GameObjects -> Bool
 checkNoRoofCollision o@(PlayerObjects _) = (getY (getPosition o) < -720)
 checkNoRoofCollision (EnemyObjects (Ball (ObjectInfo _ (vx,vy) (x,y) (Size w h) ))) | ((vy + y) > (350 - adjustsize)) = False
                                                                                     | otherwise = True
-                                                                                    where adjustsize = halfBallSprite * w * w
+                                                                                    where adjustsize = halfBallSprite * w
 
 splitb :: GameObjects -> [GameObjects] -- split into two half balls if their size is bigger than 0.2
 splitb (EnemyObjects (Ball (ObjectInfo a (x,y) c (Size w h) ))) | w > 0.2 = ((EnemyObjects (Ball (ObjectInfo a ((-ballSpeed), ballHitY - 2 * w) c halfsize))) 

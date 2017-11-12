@@ -82,7 +82,7 @@ updatePosition x@(ObjectInfo clr (vx,vy) (px,py) size) | checkSideCollision x = 
 adjustVelocity :: Float -> Float -> ObjectInfo -> ObjectInfo
 adjustVelocity x y obj@(ObjectInfo clr (vx,vy) pos size@(Size w h)) | (checkSideCollision obj) && (checkFloorCollision obj) = (ObjectInfo clr ((-(vx + x)),(ballHitY * (sqrt (3 * w)))) pos size)
                                                                     | (checkSideCollision obj) = (ObjectInfo clr ((-(vx + x)),(vy + y)) pos size)
-                                                                    | (checkFloorCollision obj) = (ObjectInfo clr ((vx + x),(ballHitY *(sqrt (sqrt (3 * w))))) pos size)
+                                                                    | (checkFloorCollision obj) = (ObjectInfo clr ((vx + x),(ballHitY *(sqrt (sqrt (sqrt (3 * w)))))) pos size)
                                                                     | otherwise = (ObjectInfo clr (((vx + x)),(vy + y)) pos size)
 
 
