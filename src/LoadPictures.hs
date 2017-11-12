@@ -16,9 +16,9 @@ filePaths = [
               "assets/P1Left.png" -- 0
             , "assets/P1Idle.png"
             , "assets/P1Right.png"
-            , "assets/P1Left.png" -- 3
-            , "assets/P1Idle.png"
-            , "assets/P1Right.png"
+            , "assets/P2Left.png" -- 3
+            , "assets/P2Idle.png"
+            , "assets/P2Right.png"
             , "assets/Arrow.png" -- 6
             , "assets/Ball.png" -- 7
             , "assets/bg.png" -- 8

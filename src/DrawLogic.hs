@@ -37,12 +37,12 @@ instance Draw GameObjects where
 getFilePath :: GameObjects -> [IO Picture] -> IO Picture
 getFilePath o@(Player (P1 _)) pics
   | (getX $ getVelocity o) < 0 = pics !! 0
-  | (getX $ getVelocity o) > 0 = pics !! 1
-  | otherwise                  = pics !! 2
+  | (getX $ getVelocity o) > 0 = pics !! 2
+  | otherwise                  = pics !! 1
 getFilePath o@(Player (P2 _)) pics
-  | (getX $ getVelocity o) < 0 = pics !! 0
-  | (getX $ getVelocity o) > 0 = pics !! 1
-  | otherwise                  = pics !! 2
+  | (getX $ getVelocity o) < 0 = pics !! 3
+  | (getX $ getVelocity o) > 0 = pics !! 5
+  | otherwise                  = pics !! 4
 getFilePath (PlayerObjects(Arrow _)) pics = pics !! 6
 getFilePath (EnemyObjects(Ball _)) pics = pics !! 7
 getFilePath (LevelObjects(Wall _)) pics = pics !! 8
