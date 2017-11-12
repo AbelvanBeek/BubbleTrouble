@@ -20,33 +20,34 @@ instance Draw GameObjects where
   draw pic o@(Player        (P1 (PlayerInfo objectinfo score _ l))) = let x = translate (-600) 300 $ scale 0.2 0.2 $ color red $ text (y ++ show score ++ "   " ++ z ++ show l) 
                                                                           y = "Player 1: " 
                                                                           z = "Lifes: " in 
-                                                                      if (l /= 0) then do sprite <- setSprite (getFilePath o pic) objectinfo
+                                                                      if (l /= 0) then do sprite <- setSprite (getSprite o pic) objectinfo
                                                                                           return $ pictures [sprite, x]
                                                                                   else return x
   draw pic o@(Player        (P2 (PlayerInfo objectinfo score _ l))) = let x = translate 200 300 $ scale 0.2 0.2 $ color blue $ text (y ++ show score ++ "   " ++ z ++ show l)
                                                                           y = "Player 2: " 
                                                                           z = "Lifes: " in 
-                                                                      if (l /= 0) then do sprite <- setSprite (getFilePath o pic) objectinfo
+                                                                      if (l /= 0) then do sprite <- setSprite (getSprite o pic) objectinfo
                                                                                           return $ pictures [sprite, x]
                                                                                   else return x
-  draw pic o@(PlayerObjects (Arrow          objectinfo))        = setSprite (getFilePath o pic) objectinfo
-  draw pic o@(EnemyObjects  (Ball           objectinfo))        = setSprite (getFilePath o pic) objectinfo
-  draw pic o@(LevelObjects  (Wall           objectinfo))        = setSprite (getFilePath o pic) objectinfo
-  draw pic o@(AnimationObjects (Animation   objectinfo img _))  = setSprite (getFilePath o pic) objectinfo
+  draw pic o@(PlayerObjects (Arrow          objectinfo))        = setSprite (getSprite o pic) objectinfo
+  draw pic o@(EnemyObjects  (Ball           objectinfo))        = setSprite (getSprite o pic) objectinfo
+  draw pic o@(LevelObjects  (Wall           objectinfo))        = setSprite (getSprite o pic) objectinfo
+  draw pic o@(AnimationObjects (Animation   objectinfo img _))  = setSprite (getSprite o pic) objectinfo
 
-getFilePath :: GameObjects -> [IO Picture] -> IO Picture
-getFilePath o@(Player (P1 _)) pics
+  --gets the correct sprite from the list of IO Pictures stored in level
+getSprite :: GameObjects -> [IO Picture] -> IO Picture
+getSprite o@(Player (P1 _)) pics
   | (getX $ getVelocity o) < 0 = pics !! 0
   | (getX $ getVelocity o) > 0 = pics !! 2
   | otherwise                  = pics !! 1
-getFilePath o@(Player (P2 _)) pics
+getSprite o@(Player (P2 _)) pics
   | (getX $ getVelocity o) < 0 = pics !! 3
   | (getX $ getVelocity o) > 0 = pics !! 5
   | otherwise                  = pics !! 4
-getFilePath (PlayerObjects(Arrow _)) pics = pics !! 6
-getFilePath (EnemyObjects(Ball _)) pics = pics !! 7
-getFilePath (LevelObjects(Wall _)) pics = pics !! 8
-getFilePath (AnimationObjects(Animation _ img _)) pics = pics !! img
+getSprite (PlayerObjects(Arrow _)) pics = pics !! 6
+getSprite (EnemyObjects(Ball _)) pics = pics !! 7
+getSprite (LevelObjects(Wall _)) pics = pics !! 8
+getSprite (AnimationObjects(Animation _ img _)) pics = pics !! img
 
 setSprite :: IO Picture -> ObjectInfo -> IO Picture
 setSprite picture (ObjectInfo c (vx,vy) (px,py) (Size w h)) = do pic <- picture

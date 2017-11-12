@@ -88,6 +88,9 @@ inputKey (EventKey k Up _ _) gstate@(GameState Play (Level p1 p1o p2 p2o enemies
 -- Handle other patterns than an EventKey
 inputKey _ gstate     = return $ gstate
 
+--Since there is no while keydown function we need to reset the speed of the players once the key goes back up,
+--if however the player already pressed the right key when the left key was still down, we don't want the player
+--to stand still after the left key goes up when the right key is still down. This functions is used to realise that.
 plusxIfNecessary, minxIfNecessary :: Float -> Float -> GameObjects -> GameObjects
 plusxIfNecessary x y p@(Player (P1 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a))) | vx > 0 = p --if moving right, we dont do anything when the left key goes up
                                                                                    | otherwise = (newVelocity x y p) --adjust the velocity
@@ -98,8 +101,5 @@ minxIfNecessary x y p@(Player (P1 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a))
 minxIfNecessary x y p@(Player (P2 (PlayerInfo (ObjectInfo d (vx,vy) o n) t c a)))  | vx < 0 = p
                                                                                    | otherwise = (newVelocity x y p) 
 
-createArrow :: GameObjects -> [GameObjects] -> [GameObjects]
-createArrow player xs
-          = (PlayerObjects (Arrow (ObjectInfo red (0,7) ((getX (getPosition player)),-1388) (Size 1 1)))) : xs
 
 

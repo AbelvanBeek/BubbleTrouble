@@ -7,6 +7,7 @@ module Controller where
 -- import System.Random
 
 import Model
+import Collision
 import UpdateLogic
 import HighScores
 import InitialStates
@@ -17,14 +18,14 @@ import Data.Maybe
 step :: Float -> IO GameState -> IO (IO GameState)
 step secs gstat = do gstate@(GameState status lvl@(Level p1 p1o p2 p2o enemies lvls ani pics) _) <- gstat
                      case status of
-                        Play    | isNothing (checkCollided lvl) -> if checkGameOver lvl
+                        Play    | isNothing (checkPlayerCollided lvl) -> if checkGameOver lvl
                                                                       then return $ return $ gstate { gameStatus = GameOver }
                                                                       else return $ return $ gstate { elapsedTime = elapsedTime gstate + secs, level = updateLevel (elapsedTime gstate) $ filterLevel lvl }
-                                | checkCollided lvl == Just (Player (P1 undefined)) -> if checkGameOver lvl 
+                                | checkPlayerCollided lvl == Just (Player (P1 undefined)) -> if checkGameOver lvl 
                                                                                                      then return $ return $ gstate { gameStatus = GameOver }
-                                                                                                     else return $ initialPlayWPlayer (fromJust (checkCollided lvl)) p2
+                                                                                                     else return $ initialPlayWPlayer (fromJust (checkPlayerCollided lvl)) p2
                                 | otherwise -> if checkGameOver lvl
                                                   then return $ return $ gstate { gameStatus = GameOver }
-                                                  else return $ initialPlayWPlayer p1 (fromJust (checkCollided lvl))
+                                                  else return $ initialPlayWPlayer p1 (fromJust (checkPlayerCollided lvl))
 
                         _    -> return $ return gstate { elapsedTime = elapsedTime gstate + secs }
